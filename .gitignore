@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.npm-cache/
+*.tsbuildinfo
+dist/
+coverage/
+*.log
+backend/bin/
+backend/coverage.out
+.DS_Store
