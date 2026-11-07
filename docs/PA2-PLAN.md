@@ -82,21 +82,52 @@ The queue, worker, sandbox, and model feature are planned for later milestones. 
 
 **Expected output:** A short rules file with **stack, commands, conventions, and never** sections, plus **allowed, ask first, and never** permission tiers. At least two rules are traceable to real problems in commits or `AI-LOG.md`.
 
-- [ ] Write the four rules sections and three permission tiers.
-- [ ] Record actual problems and link at least two resulting rules to evidence.
+- [x] Write the four rules sections and three permission tiers in `AGENTS.md`.
+- [x] Record two setup problems and link the resulting rules to `AI-LOG.md`.
 
 ## 4. Write the endpoint contract
 
-**Description:** Specify the chosen endpoint so another developer can build a client from the document.
+**Description:** Specify how a client submits C++ code and how the API responds, including failures and retries.
 
-**Input:** The chosen endpoint, the LeeTKOB brief, and the sections in IA3's `CONTRACT.md`. For example, a submissions contract should define how an idempotency key behaves on retries.
+**Input:** The project brief, `POST /labs/{labId}/submissions`, and [IA3's contract](IA3/CONTRACT.md): conventions, errors, resources, endpoints, and versions.
 
-**Expected output:** `docs/contract/<endpoint>.md` describing authorization and ownership, request and response fields and rules, every error as RFC 9457 problem details with its status, paging or idempotency where applicable, and how changes are handled.
+**Expected output:** `docs/contract/submissions.md`, detailed enough for a stranger to build a client and for step 5 to test it.
 
-- [ ] Define the caller's role and ownership rules.
-- [ ] Define requests, responses, field rules, and examples.
-- [ ] List each error type and status using problem details.
-- [ ] Define paging or idempotency where applicable, and the change policy.
+### Decisions and contract sections
+
+| Area | Decide and document | Example to consider |
+|---|---|---|
+| Purpose | Method, path, what the endpoint creates, and when judging starts. | Accept a submission and return an identifier while judging happens later. |
+| Access | Authentication, allowed role, lab enrollment, and ownership. | An enrolled student can submit their own code; the server determines the student identity. |
+| Request | Path parameter, headers, content type, body fields, limits, and validation. | Require an `Idempotency-Key` header and a C++ source field. Choose the size limit and ID format. |
+| Success | HTTP status, response headers and body, field meanings, and initial state. | A creation response contains the submission ID, lab ID, and queued status. |
+| Errors | Each failure's status, problem type URI, `title`, `status`, `detail`, content type, and any extensions. | An invalid body returns a documented validation problem using `application/problem+json`. |
+| Idempotency | Key scope, format, retention, same-request retry, changed-request reuse, and simultaneous retries. | A retry with the same key and payload returns the original result; decide what happens when the payload differs. |
+| Side effects | What is saved, whether a job is queued, and what happens on failures. | Ensure a successful response does not leave a saved submission without a corresponding judging job. |
+| Evolution | Compatibility policy and how clients learn about breaking changes. | Document how fields and error types can change. |
+
+The endpoint contract records these decisions. Paging is not needed for this creation endpoint.
+
+### Error and retry scenarios to resolve
+
+- Missing or invalid authentication; authenticated user with the wrong role or enrollment.
+- Missing or inaccessible lab; decide whether to hide its existence from unauthorized users.
+- Invalid path, body, field, content type, or source size.
+- Missing or invalid idempotency key; reused key with a different payload.
+- Submission or queue unavailable; decide what the client may safely retry.
+- Repeated or simultaneous requests with the same key and payload.
+
+Assign a specific status and problem type to every error chosen for the contract. Choose the precedence when more than one error applies, where it affects clients.
+
+### Work sequence
+
+- [x] Obtain IA3's `CONTRACT.md` and mirror its required sections.
+- [x] Define access, request validation, success response, and submission lifecycle.
+- [x] Define idempotency scope, retention, conflict, concurrency, and failure behavior.
+- [x] List error types and statuses and provide a problem-detail example.
+- [x] Define side effects and the contract change policy.
+- [x] Draft `docs/contract/submissions.md` with request and response examples.
+- [x] Review the contract against the rubric and document [step 5 test scenarios](contract/submissions-test-scenarios.md).
 
 ## 5. Implement the endpoint and contract tests
 
