@@ -70,9 +70,9 @@ The queue, worker, sandbox, and model feature are planned for later milestones. 
 - [x] Add initial frontend, Go module, and local database configuration.
 - [x] Create `.gitignore` and `.env.example`.
 - [x] Start local PostgreSQL and confirm it accepts connections (host port 5433).
-- [ ] Verify setup on a fresh clone after the first push; Go is installed and the local repository is connected to GitHub.
+- [x] Clone the pushed repository, install frontend dependencies, and build the frontend. PostgreSQL was checked in the original workspace.
 - [ ] Configure an enforceable spending cap and measure cost per lab; the README has an illustrative estimate.
-- [ ] Complete a secret review before the first commit. A pattern scan found no common key formats; there is no Git history yet. Rotate any exposed secret and record it in `AI-LOG.md`.
+- [ ] Complete a secret review of the tree and history. A pattern scan found no common key formats before the initial commit. Rotate any exposed secret and record it in `AI-LOG.md`.
 
 ## 3. Write assistant rules and permissions
 
