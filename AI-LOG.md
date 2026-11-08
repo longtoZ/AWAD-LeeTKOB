@@ -22,3 +22,10 @@ Tool used: Codex, for planning and initial project setup.
 - **Rejected:** The user rejected the assistant's recommendation to use Next.js for the backend, preferring a backend-focused design.
 - **Changed:** The plan uses React with TypeScript and a separate Go backend.
 - **Evidence:** `docs/PA2-PLAN.md`, step 1; repository setup commit `aa16e18`.
+
+## 4. Submission setup
+
+- **Task:** Implement login, enrollment, and the submission endpoint with a simple PostgreSQL queue.
+- **Changed:** Codex added SCS-backed sessions, versioned migrations, and an atomic submission/job insert. PostgreSQL contract checks run in an isolated temporary schema.
+- **Changed:** PostgreSQL `text` cannot store a NUL byte, although the contract allows it in a source string. A second migration stores source as bytes; a contract check verifies preservation.
+- **Remaining:** Complete the team's contract review, cover the remaining contract scenarios, and run the checks in required CI.

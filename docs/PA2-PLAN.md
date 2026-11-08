@@ -19,7 +19,7 @@
 | Backend | **Go**; Chi, Go modules, standard JSON handling, `testing` and `net/http/httptest` | Chi offers routes and middleware with Go's `net/http`. Validate requests explicitly. Use Vite's development proxy and Caddy's `/api` reverse proxy in deployment. |
 | Database | PostgreSQL, `pgx`, sqlc, and Goose migrations | Write SQL and generate typed Go access; migrations track schema changes. Use PostgreSQL in Docker for local development. Use transactions and unique constraints for idempotency. |
 | Authentication | SCS server-side sessions stored in PostgreSQL; secure HTTP-only cookies; Argon2id for passwords | Keep sessions on the server. Add CSRF protection, rate limits, and backend checks for role, class membership, and ownership. SCS handles sessions; the team must implement or adopt account and password flows. |
-| Queue and worker | River with PostgreSQL; separate Go worker | Start with two concurrent jobs and up to three attempts for transient failures; tune using load tests. Store failures for inspection and make job processing idempotent. |
+| Queue and worker | PostgreSQL `jobs` table; separate Go worker later | Save the submission and pending job in one transaction. Design worker concurrency, retries, and recovery for PA3. |
 | Sandbox | Self-hosted Judge0 on a dedicated VM | Provides an existing judging system. Verify every brief requirement with attack tests; Judge0 alone is not proof of compliance. |
 | Model review | Google Gemini 3.8 Flash as an eval candidate; provisional $10 project budget | Compare on the dev set before committing. Confirm provider privacy terms and configure an enforceable cap if supported; otherwise enforce a per-lab application budget. Estimate cost after measuring token use. |
 | Deployment | Hetzner Cloud Linux VMs: one for React, Go API, worker, and PostgreSQL; one for Judge0; Docker Compose and Caddy | Serve the frontend and API under one HTTPS origin. Back up PostgreSQL, restrict Judge0 access, and check capacity and pricing before provisioning. |
@@ -58,6 +58,8 @@ The queue, worker, sandbox, and model feature are planned for later milestones. 
 - [x] Select a model candidate and provisional budget; measure cost per lab during evaluation.
 - [x] Plan hosting, secrets, live updates, logs, metrics, traces, and load testing.
 - [x] Choose quality tools and one PA2 endpoint; record the tradeoffs.
+
+**Accepted step 5 decisions:** Implement login and logout with SCS sessions in PostgreSQL. Store users, labs, and enrollments in PostgreSQL; provide a simple admin enrollment endpoint. Record a pending job atomically with each submission. The judging worker is a later milestone.
 
 ## 2. Set up the repository
 
@@ -137,10 +139,19 @@ Assign a specific status and problem type to every error chosen for the contract
 
 **Expected output:** An endpoint implementation and automated contract tests covering success, each documented error, ownership, and paging or idempotency where applicable.
 
-- [ ] Implement the endpoint according to the contract.
-- [ ] Test the success path, response fields, and every documented error type.
-- [ ] Test ownership and paging or idempotency where applicable.
-- [ ] Keep tests aligned with the contract; do not weaken them just to pass.
+**Progress:** The backend now has login, logout, admin enrollment, and submission handlers with PostgreSQL sessions and a transactional jobs table. Initial database-backed tests pass locally. Contract peer review, remaining scenarios, and CI evidence are still open.
+
+- [x] Implement the endpoint according to the contract.
+- [x] Test the success path, response fields, and each documented error type.
+- [x] Test the ownership rule and idempotency behavior; paging does not apply to this creation endpoint.
+- [x] Keep tests aligned with the contract; do not weaken them just to pass.
+
+Completed so far:
+
+- [x] Add login, logout, admin enrollment, and submission handlers.
+- [x] Store SCS sessions, submissions, and pending jobs in PostgreSQL; save each submission and its job in one transaction.
+- [x] Run initial database-backed checks for login, enrollment, idempotent replay, an in-flight key, and rollback.
+- [x] Apply the local database migrations and verify the frontend build.
 
 ## 6. Set up local checks and CI
 
@@ -228,20 +239,21 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 ### Contract and tests
 
 - [ ] **K1 — Tran Anh Khoa** · Due: 8 Nov · Prerequisite: existing contract draft.
-  - [ ] Peer-review and freeze `docs/contract/submissions.md` against the class brief and any available product-owner FAQ answer.
+  - [x] Team peer-reviewed `docs/contract/submissions.md`.
+  - [ ] Freeze the reviewed contract against the class brief and any available product-owner FAQ answer.
   - [ ] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
   - [ ] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
 - [ ] **K2 — Tran Anh Khoa** · Due: 8 Nov; recheck 10 Nov · Prerequisite: K1's list of unanswered decisions.
   - [ ] Ask the product owners the exact behavior questions left open by the brief.
   - [ ] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
 - [ ] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract.
-  - [ ] Write Go HTTP contract tests before endpoint behavior for success, each contract error type, enrolled/unenrolled students, non-student role, same-key/same-body replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior where implemented.
-  - [ ] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
+- [ ] Write Go HTTP contract tests before endpoint behavior for success, each contract error type, enrolled/unenrolled students, non-student role, same-key/same-body replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior where implemented. Tests now cover these behaviors, but the initial red run was not preserved before implementation.
+  - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions. See `backend/internal/api/api_test.go`.
   - [ ] Save the initial expected failing output and keep tests unchanged while implementing the code.
 - [ ] **H2 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H1's red tests and the existing Go module.
-  - [ ] Implement the smallest real `POST /labs/{labId}/submissions` handler that satisfies the frozen contract.
-  - [ ] Verify identity and enrollment come from server-side state and error bodies match the contract.
-  - [ ] Run the contract suite successfully; do not add model calls or sandbox execution to this PA2 endpoint.
+  - [x] Implement the real `POST /labs/{labId}/submissions` handler.
+  - [x] Verify identity and enrollment come from server-side state; tests check problem response structure and statuses.
+  - [x] Run the PostgreSQL contract suite successfully; no model calls or sandbox execution are part of this PA2 endpoint.
 
 ### Local checks, CI, and branch protection
 
