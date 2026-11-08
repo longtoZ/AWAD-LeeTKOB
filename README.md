@@ -13,7 +13,7 @@ LeeTKOB supports C++ lab judging and constraint review before a TA publishes mar
 Requirements: Node.js and npm, Go 1.23 or newer, Docker with Compose, and Git. On Windows PowerShell, use `npm.cmd` if script execution prevents `npm` from running.
 
 1. Clone `https://github.com/longtoZ/AWAD-LeeTKOB.git`.
-2. Copy `.env.example` to `.env`. Set `POSTGRES_DB`, `POSTGRES_USER`, and a local `POSTGRES_PASSWORD`; use those values in `DATABASE_URL` (for example, `postgres://user:password@localhost:5433/leetkob?sslmode=disable`). Set `API_PORT` to `8080`. These variables are planned for the API; the API does not load them yet. Never commit `.env`.
+2. Copy `.env.example` to `.env` and set local values there: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DATABASE_URL`, and `API_PORT` (normally `8080`). Make the database name, user, password, and port agree between `DATABASE_URL` and the PostgreSQL settings. The committed example intentionally contains variable names only. These variables are planned for the API; the API does not load them yet. Never commit `.env`.
 3. Run `docker compose up -d` from the repository root to start PostgreSQL.
 4. In `frontend`, run `npm ci`, then `npm run dev`. Vite prints the local URL.
 5. Run `npm run build` in `frontend` to build the frontend. The Go API and its commands will be added with the endpoint.
