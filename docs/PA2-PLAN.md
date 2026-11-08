@@ -194,3 +194,27 @@ Assign a specific status and problem type to every error chosen for the contract
 - [ ] Confirm the ZIP includes `SELF_ASSESSMENT_REPORT.md` and submit it from one member's student Google account.
 
 **Tag note:** `PA2.md` must link to the tag's CI run. Arrange the final commit and tag workflow so the tagged commit contains the required evidence; if the tag CI link is not known in advance, document how to locate the run from the tag and include the direct link when available.
+
+## PA2 readiness as of 8 November 2026
+
+The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/submissions.md and the team's existing plan. Keep this choice consistent in the contract, tests, CI evidence, and hand-in.
+
+| PA2 criterion | Current repository evidence | Remaining acceptance check |
+|---|---|---|
+| Rules file (15) | AGENTS.md has stack, commands, conventions, never, and permission tiers. AI-LOG.md records two setup problems. | Confirm two product rules trace to real commits or contemporaneous AI-LOG entries. |
+| Permissions and secrets (10) | .env.example now lists variable names without values; .gitignore excludes local .env. README says the proposed US$10 budget is not enforced. | Scan the full history; configure and document an actual model API spending cap. Do not claim a cap is enforced until verified. |
+| One command per check (10) | README currently documents setup and frontend build only. No lint, format check, type-check, or test scripts are present. | Add one command per applicable check, run each from a fresh clone, and use those same commands in CI. |
+| CI blocks merge (20) | No workflow exists in this repository snapshot. Branch protection is a GitHub setting, not represented by tracked files. | Add PR and pa2 tag workflows, require all checks on main, capture settings, and demonstrate a blocked red PR followed by a green fix. |
+| Endpoint contract (25) | docs/contract/submissions.md specifies role, enrollment, request/response, problem details, idempotency, and side effects. | Peer-review the contract and settle unclear field or retry behavior before implementation/tests. |
+| Contract tests (15) | docs/contract/submissions-test-scenarios.md is a scenario list, not an automated test suite. No endpoint implementation is present yet. | Implement tests from the frozen contract, run them in CI, and show a deliberate contract break failing before its code fix. |
+| AI log (5) | AI-LOG.md records setup decisions and changes. | Continue recording this work honestly, including changes or rejections and which check caught them. |
+
+### Remaining work before submission
+
+1. Finish the secret-history review and configure the actual spending cap.
+2. Implement the endpoint and automated contract tests from the frozen contract.
+3. Add the four local checks and matching CI jobs; confirm they fail on a deliberate contract violation.
+4. Protect main, capture evidence, and keep later changes on PRs.
+5. Complete root PA2.md and SELF_ASSESSMENT_REPORT.md; verify the pa2 tag CI, ZIP contents, ascending student IDs, score, and student-account submission by 11 November 2026, 22:00 Vietnam time.
+
+This status describes the repository snapshot and must be refreshed as work lands. A documented plan or scenario is not evidence that implementation, tests, branch protection, or a passing CI run exists.
