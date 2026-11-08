@@ -223,22 +223,69 @@ This status describes the repository snapshot and must be refreshed as work land
 
 Use this sequence to complete PA2. It keeps the repository's chosen POST /labs/{labId}/submissions endpoint. The target is full evidence for every rubric row; marks depend on what is present and reproducible at the pa2 tag, not on this plan.
 
-| ID / owner | Due | Action and prerequisite | Acceptance criteria and evidence |
-|---|---|---|---|
-| K1 — Tran Anh Khoa | 8 Nov | Peer-review and freeze docs/contract/submissions.md. Start from the existing draft; use the class brief and any product-owner FAQ answer. | Every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome is explicit. Record the frozen commit and test checklist. Any unresolved behavior is marked as a team assumption and does not conflict with the brief. |
-| K2 — Tran Anh Khoa | 8 Nov; check again 10 Nov | Ask the product owners about contract behavior the brief leaves open. Prerequisite: list the exact unanswered decisions from K1. | Link the pinned FAQ answer in the contract, or record that no answer arrived and document the team's narrow assumption. Do not treat an unanswered question as an official requirement. |
-| H1 — Pham Bao Huy | 9 Nov | Turn the frozen contract into automated Go HTTP contract tests before writing endpoint behavior. Prerequisite: K1. | Tests cover success; each contract error type; enrolled and unenrolled students; non-student role; replay with same key/body; changed body with same key; concurrent key; atomic submission/job behavior where implemented. For the Session 7 exercise target, reach at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions. Save the initial expected failing output and keep tests unchanged to make code pass. |
-| L1 — To Thanh Long | 9 Nov | Add one documented command each for lint, format check, type check where supported, and tests. Prerequisites: current Go/TypeScript stack and H1's test command. | README commands run from a fresh clone, fail on a real defect, and are the exact commands used by CI. Include frontend and Go checks; document and use Node 22.13+ consistently for frontend and browser checks. Do not use empty or pass-through test commands. |
-| L2 — To Thanh Long | 9 Nov | Complete secret and model-cost setup. Prerequisites: Khoa confirms the selected provider/key; review the full repository history, including refs available locally. | .env.example has names only; no secret is present in the tree or history. Configure the provider's actual spending cap or an enforceable application cap, and document the setting and cost boundary in README. If the history contains a real key, rotate it and record the recovery truthfully. |
-| H2 — Pham Bao Huy | 10 Nov | Implement the smallest real POST submission handler against the frozen contract. Prerequisites: H1 red tests, existing Go module. | Contract tests pass against HTTP behavior; identity and enrollment come from server-side state, not caller-supplied ownership. Error bodies match the contract. No model call or sandbox execution is needed for this PA2 endpoint. |
-| L3 — To Thanh Long | 10 Nov | Add CI for pull requests and the pa2 tag, including the Session 7 browser smoke check. Prerequisites: L1 commands and H1/H2 contract suite. | Every documented check runs in CI with the same command; no workflow step swallows failures. Run the same Node 22.13+ version used by the project. Add `npm run e2e` with Playwright/Chromium in a separate `e2e` job; the browser journey opens `/` and verifies the LeeTKOB app shell renders. Keep this smoke check separate from API contract evidence. Make both `gates` and `e2e` fail on real defects; the tag event runs the required suite. Link the workflow and green run. |
-| L4 — To Thanh Long | 10 Nov | Protect main after the baseline checks are green. Prerequisite: L3. | Require pull requests and all PA2 checks, including `gates` and `e2e`; disallow bypass. Verify a direct push to `main` is rejected. Save a settings link or screenshot and evidence of the rejected push. |
-| H3 — Pham Bao Huy | 10 Nov | Demonstrate a deliberate contract break on a PR, then fix it in a later commit. Prerequisites: L3 and L4. | A code-only violation, such as bypassing enrollment or changing replay behavior, makes the contract test fail; the required check blocks merge; the later fix turns it green without changing the contract or weakening tests. Preserve both commits and the PR link. |
-| L5 — To Thanh Long | 10 Nov | Capture the gate evidence for H3 and perform the Session 7 second-reader review. Prerequisites: the break PR exists and the fix is green. | Verify the red required check prevented merge, then verify the fix commit is green. In a fresh session, ask a second assistant to review the deliberate-break PR diff against the contract; record whether it caught the violation, its quoted line, and anything it invented. Put direct links to the PR, red run, fix commit, green run, and a concise second-reader result in PA2.md. |
-| H4 — Pham Bao Huy | 10 Nov | Run the README setup and all checks from a fresh clone of the final candidate. Prerequisites: H2 and L3 green. | Record the commit SHA and exact command results; no undocumented local files or secrets are needed; all tests pass against the candidate commit. |
-| K3 — Tran Anh Khoa | 10 Nov | Complete root PA2.md and keep AI-LOG.md current. Prerequisites: L2–L5 evidence and actual work history. | PA2.md links the public repository, protected settings, blocked PR, fix, deliberate break, and pa2 tag CI run. AI-LOG.md has truthful tool/task and Changed/Rejected entries tied to real work; no activity is reconstructed or invented. |
-| K4 — Tran Anh Khoa | 10 Nov | Score each of the seven rubric criteria and prepare the ZIP. Prerequisite: H4 and K3. | SELF_ASSESSMENT_REPORT.md has one evidence-backed row per criterion, an honest What we did not manage section, and a total matching the ZIP filename. ZIP contains .git and all required files; team IDs are ascending. |
-| K5 — Tran Anh Khoa | 11 Nov, before 22:00 | Tag the final main commit pa2, push the tag, verify its CI, and submit the ZIP from a member's student Google account. Prerequisite: K4 and active <StudentID>@student.hcmus.edu.vn Google account. | The public pa2 tag points to the assessed commit; its CI run is green and linked in PA2.md; Classroom shows the submission receipt before the deadline. |
+Mark each task complete only when its nested acceptance boxes are checked. Update these boxes as work lands; an unchecked item is still open.
+
+### Contract and tests
+
+- [ ] **K1 — Tran Anh Khoa** · Due: 8 Nov · Prerequisite: existing contract draft.
+  - [ ] Peer-review and freeze `docs/contract/submissions.md` against the class brief and any available product-owner FAQ answer.
+  - [ ] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
+  - [ ] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
+- [ ] **K2 — Tran Anh Khoa** · Due: 8 Nov; recheck 10 Nov · Prerequisite: K1's list of unanswered decisions.
+  - [ ] Ask the product owners the exact behavior questions left open by the brief.
+  - [ ] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
+- [ ] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract.
+  - [ ] Write Go HTTP contract tests before endpoint behavior for success, each contract error type, enrolled/unenrolled students, non-student role, same-key/same-body replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior where implemented.
+  - [ ] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
+  - [ ] Save the initial expected failing output and keep tests unchanged while implementing the code.
+- [ ] **H2 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H1's red tests and the existing Go module.
+  - [ ] Implement the smallest real `POST /labs/{labId}/submissions` handler that satisfies the frozen contract.
+  - [ ] Verify identity and enrollment come from server-side state and error bodies match the contract.
+  - [ ] Run the contract suite successfully; do not add model calls or sandbox execution to this PA2 endpoint.
+
+### Local checks, CI, and branch protection
+
+- [ ] **L1 — To Thanh Long** · Due: 9 Nov · Prerequisites: Go/TypeScript stack and H1's test command.
+  - [ ] Document one command each for lint, format check, type check where applicable, and tests.
+  - [ ] Use Node 22.13+ consistently for frontend/browser checks and use the same documented commands locally and in CI.
+  - [ ] Verify commands work from a fresh clone and fail on a real defect; no empty or pass-through checks.
+- [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
+  - [ ] Confirm `.env.example` lists names only and scan the full repository history and available refs for secrets.
+  - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
+  - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
+- [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
+  - [ ] Run every documented check in PR CI with the same command; use Node 22.13+ and do not swallow failures.
+  - [ ] Add `npm run e2e` with Playwright/Chromium in a separate `e2e` job; open `/` and verify the LeeTKOB app shell renders. Keep this smoke check separate from API contract evidence.
+  - [ ] Make `gates` and `e2e` fail on real defects and run the required suite on the `pa2` tag.
+  - [ ] Link the workflow and green CI run.
+- [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
+  - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
+  - [ ] Verify a direct push to `main` is rejected.
+  - [ ] Save a settings link or screenshot and evidence of the rejected push.
+- [ ] **H3 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: L3 and L4.
+  - [ ] Make a code-only contract violation on a PR (for example, bypass enrollment or change replay behavior) without weakening tests.
+  - [ ] Confirm the required check turns red and blocks merge.
+  - [ ] Fix the code in a later commit; confirm the check turns green without changing the contract or weakening tests. Preserve both commits and the PR link.
+- [ ] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green.
+  - [ ] Capture links to the PR, red run, fix commit, and green run; verify the red required check prevented merge.
+  - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
+  - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
+- [ ] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
+  - [ ] Run the README setup and all checks from a fresh clone of the final candidate.
+  - [ ] Record the commit SHA and exact command results; confirm no undocumented local files or secrets are needed and all tests pass.
+
+### Evidence and submission
+
+- [ ] **K3 — Tran Anh Khoa** · Due: 10 Nov · Prerequisites: L2–L5 evidence and actual work history.
+  - [ ] Complete root `PA2.md` with links to the public repository, protected settings, blocked PR, fix, deliberate break, and `pa2` tag CI run.
+  - [ ] Keep `AI-LOG.md` truthful, with actual tool/task and Changed/Rejected entries; do not reconstruct or invent activity.
+- [ ] **K4 — Tran Anh Khoa** · Due: 10 Nov · Prerequisites: H4 and K3.
+  - [ ] Complete `SELF_ASSESSMENT_REPORT.md` with one evidence-backed row per rubric criterion, an honest “What we did not manage” section, and a total matching the ZIP filename.
+  - [ ] Prepare a ZIP containing `.git` and required files; use team IDs in ascending order.
+- [ ] **K5 — Tran Anh Khoa** · Due: 11 Nov, before 22:00 · Prerequisites: K4 and an active member `<StudentID>@student.hcmus.edu.vn` Google account.
+  - [ ] Tag the assessed public main commit `pa2` and push the tag.
+  - [ ] Verify the tag's CI run is green and link it in `PA2.md`.
+  - [ ] Submit the ZIP from a member's student Google account and confirm the Classroom receipt before the deadline.
 
 ### Team coordination
 
@@ -250,10 +297,9 @@ Use this sequence to complete PA2. It keeps the repository's chosen POST /labs/{
 
 ### Session 07 exercise guidance (supplemental to the official rubric)
 
-The current Classroom Session 07 material says that adapting starter steps 2–6 to a team's LeeTKOB repository counts toward PA#2. The items below make those exercise checks visible in the team plan. They are not additional rubric rows or guaranteed points; the seven criteria in the active PA#2 rubric remain the scoring authority.
+The current Classroom Session 07 material says that adapting starter steps 2–6 to a team's LeeTKOB repository counts toward PA#2. The checks above make those exercise items trackable. They are not additional rubric rows or guaranteed points; the seven criteria in the active PA#2 rubric remain the scoring authority.
 
-- Keep the gate fail-closed: do not use `|| true`, `continue-on-error`, or equivalent failure suppression. Verify that both required checks can go red on a real defect.
-- Preserve test strength: review tests against the contract, make any stricter test change separately from code changes, and never weaken or edit a test merely to make the implementation green.
-- Use the required branch settings and proof in L4: pull request required, checks required, bypass disabled, and a rejected direct push after protection is active.
-- For the browser check, test only the current app-shell smoke journey unless a real user flow exists by PA#2. Do not represent the smoke test as coverage of the submission API; the HTTP contract suite remains the API evidence.
-- For the second-reader review, use a fresh assistant session and report what it caught and what it invented. It supplements human review and does not replace the team's contract review.
+- The gate must remain fail-closed: no `|| true`, `continue-on-error`, or equivalent failure suppression.
+- Tests must stay aligned with the contract and must not be weakened merely to make the implementation green.
+- The app-shell browser smoke test is not evidence for the submission API; the HTTP contract suite remains the API evidence.
+- The second-reader review supplements human review and does not replace the team's contract review.
