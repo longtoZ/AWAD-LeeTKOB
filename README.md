@@ -5,18 +5,61 @@ LeeTKOB supports C++ lab judging and constraint review before a TA publishes mar
 ## Stack
 
 - Frontend: React, TypeScript, Vite, and npm.
-- Backend: Go; the API is planned but not implemented yet.
+- Backend: Go, Chi, and SCS sessions stored in PostgreSQL.
 - Database: PostgreSQL, started locally with Docker Compose.
 
 ## Local setup
 
-Requirements: Node.js and npm, Go 1.23 or newer, Docker with Compose, and Git. On Windows PowerShell, use `npm.cmd` if script execution prevents `npm` from running.
+Requirements: Node.js and npm, Go 1.26 or newer, Docker with Compose, and Git. On Windows PowerShell, use `npm.cmd` if script execution prevents `npm` from running.
 
 1. Clone `https://github.com/longtoZ/AWAD-LeeTKOB.git`.
-2. Copy `.env.example` to `.env` and set local values there: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DATABASE_URL`, and `API_PORT` (normally `8080`). Make the database name, user, password, and port agree between `DATABASE_URL` and the PostgreSQL settings. The committed example intentionally contains variable names only. These variables are planned for the API; the API does not load them yet. Never commit `.env`.
+2. Copy `.env.example` to `.env` and set `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DATABASE_URL`, and `API_PORT` (normally `8080`). Use host port `5433` in `DATABASE_URL`. Set `APP_ORIGIN=http://localhost:5173` and `COOKIE_SECURE=false` for local HTTP. Use HTTPS and `COOKIE_SECURE=true` in deployment. Never commit `.env`.
 3. Run `docker compose up -d` from the repository root to start PostgreSQL.
 4. In `frontend`, run `npm ci`, then `npm run dev`. Vite prints the local URL.
-5. Run `npm run build` in `frontend` to build the frontend. The Go API and its commands will be added with the endpoint.
+5. Run `npm run build` in `frontend` to build the frontend.
+
+## Backend
+
+```text
+backend/
+├── cmd/
+│   ├── server/          # API entry point
+│   ├── migrate/         # Database migration command
+│   └── create-user/     # Initial account command
+├── internal/api/
+│   ├── server.go        # Router and shared server dependencies
+│   ├── auth.go          # Login and logout handlers
+│   ├── enrollment.go    # Enrollment handler
+│   ├── submission.go   # Submission and idempotency handling
+│   ├── problem.go      # Problem details responses
+│   ├── password.go     # Password hashing
+│   └── api_test.go     # Unit and HTTP contract checks
+├── migrations/          # Versioned PostgreSQL schema changes
+├── go.mod
+└── go.sum
+```
+
+Files in `internal/api` share the `api` package. The SQL used by each handler stays alongside that handler for now.
+
+The Go programs read shell environment variables; they do not load `.env` automatically. In PowerShell, load the local file from the repository root:
+
+```powershell
+Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*=' } | ForEach-Object {
+  $name, $value = $_ -split '=', 2
+  [Environment]::SetEnvironmentVariable($name, $value, 'Process')
+}
+cd backend
+go run ./cmd/migrate
+go run ./cmd/server
+```
+
+From `backend`, run `go test ./...` for unit checks. Set `TEST_DATABASE_URL` to a PostgreSQL test database to include integration checks; these create and remove an isolated temporary schema. CI must set this variable so database contract tests are not skipped.
+
+For initial development accounts, set `USER_EMAIL`, `USER_PASSWORD` (at least 12 bytes), and `USER_ROLE` (`admin`, `ta`, or `student`) in the shell, then run `go run ./cmd/create-user`. Remove the password environment variable afterwards. Labs currently need to be created in PostgreSQL; an authenticated admin can enroll a student using `POST /labs/{labId}/enrollments` with JSON `{ "studentId": "<uuid>" }`.
+
+`POST /auth/login` accepts `email` and `password`; `POST /auth/logout` ends the session. These endpoints and enrollment require the configured `Origin` header. Submission details are in [the contract](docs/contract/submissions.md). No registration UI, judging worker, or sandbox is implemented yet.
+
+For a walkthrough with example requests, see [manual backend testing](docs/MANUAL-TESTING.md).
 
 ## Model and cost
 
