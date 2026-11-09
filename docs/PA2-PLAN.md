@@ -267,13 +267,14 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 - [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
   - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
   - [x] Run `npm audit` against the committed frontend lockfile; see `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
-  - [ ] Verify the full-history scan passes for the submitted refs and resolve any findings.
+  - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `700a07d` (run 42616431192).
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
 - [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
   - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.
   - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
-  - [ ] Confirm the GitHub jobs pass and fail on real defects; link the workflow and green CI run.
+  - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42616431192](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616431192).
+  - [ ] Demonstrate that a real contract defect turns a required check red and blocks merge; preserve the red run and subsequent green fix run (H3/L5).
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
   - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
   - [ ] Verify a direct push to `main` is rejected.
@@ -286,7 +287,7 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [ ] Capture links to the PR, red run, fix commit, and green run; verify the red required check prevented merge.
   - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
   - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
-- [ ] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
+- [x] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
   - [x] Run the README setup and all documented checks from a fresh clone at `3e4728c`.
   - [x] Record the commit SHA and exact command results; all listed checks passed with the isolated PostgreSQL test DB. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
 

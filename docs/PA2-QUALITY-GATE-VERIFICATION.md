@@ -1,6 +1,6 @@
 # PA2 quality gate verification
 
-Fresh-clone verification was run on 9 November 2026 from commit `3e4728c` in a checkout whose path does not contain `#` (Vite treats `#` in the requested `PA#2` workspace path as a URL fragment on Windows).
+Fresh-clone verification was run on 9 November 2026 from commit `3e4728c` in a checkout whose path does not contain `#` (Vite treats `#` in the requested `PA#2` workspace path as a URL fragment on Windows). The pull request's current head, `700a07d5f6623986d5eb21739b0262f7b4f8de85`, also passed all three GitHub Actions jobs in [run 42616431192](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616431192): `gates`, `secret-history`, and `e2e`.
 
 Commands and results:
 
@@ -14,4 +14,4 @@ Commands and results:
 | `npm audit` in `frontend/` | Passed; 0 vulnerabilities. |
 | `npm run e2e` in `frontend/` | Passed; 1 Playwright test confirmed the LeeTKOB page heading and shell text. |
 
-The checks were run from a fresh clone so Vite could build and serve correctly. GitHub Actions has not yet reported these jobs on the pull request. Required branch protection, the full-history secret-scan result on the GitHub refs, and the provider spending cap are not established by this local run.
+Required branch protection and the provider spending cap are not established by these checks. The green jobs prove the configured checks pass for this head; a deliberate contract-breaking change has not yet been used to prove that a required check blocks merge. Branch protection is not configured, so no job is currently enforced as a required merge check.
