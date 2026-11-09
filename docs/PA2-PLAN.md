@@ -206,18 +206,18 @@ Completed so far:
 
 **Tag note:** `PA2.md` must link to the tag's CI run. Arrange the final commit and tag workflow so the tagged commit contains the required evidence; if the tag CI link is not known in advance, document how to locate the run from the tag and include the direct link when available.
 
-## PA2 readiness as of 9 November 2026
+## PA2 readiness as of 10 November 2026
 
 The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/submissions.md and the team's existing plan. Keep this choice consistent in the contract, tests, CI evidence, and hand-in.
 
 | PA2 criterion | Current repository evidence | Remaining acceptance check |
 |---|---|---|
 | Rules file (15) | `AGENTS.md` has stack, commands, conventions, never, and permission tiers. Two new setup-specific “Never” rules link to the port conflict and example-environment-value incidents in `AI-LOG.md` entries 1–2. | Keep the rules concise and verify the links still describe real incidents. |
-| Permissions and secrets (10) | `.env.example` contains variable names only; `.gitignore` excludes `.env`; full-history `secret-history` scan passed on PR refs in run 42616773213. README says the proposed US$10 budget is not enforced. | Configure and document an actual provider or application spending cap. |
-| One command per check (10) | README documents frontend, Go, audit, and browser checks; CI runs frontend checks, Go format/vet/tests, audit, and E2E. Fresh-clone checks are recorded below. | Keep the README commands runnable from the stated repository root and identical to CI; verify the updated verbose test command. |
-| CI blocks merge (20) | `gates`, `secret-history`, and `e2e` run on PRs and passed on run 42616773213. | Configure required checks on protected `main`, demonstrate a red contract-breaking PR blocked from merge and a green fix, and verify direct pushes are rejected. |
+| Permissions and secrets (10) | `.env.example` contains variable names only; `.gitignore` excludes `.env`; full-history `secret-history` scan passed on PR refs in run 42660477736. README says the proposed US$10 budget is not enforced. | Configure and document an actual provider or application spending cap. |
+| One command per check (10) | README and CI now use root-level `--prefix frontend` commands. The current head passed the matching CI checks, and the Go log displays 5 named unit tests and 46 contract subtests in run 42660477736. | Repeat the fresh-clone check on any later assessed commit. |
+| CI blocks merge (20) | `gates`, `secret-history`, and `e2e` run on PRs and passed on run 42660477736. | Configure required checks on protected `main`, demonstrate a red contract-breaking PR blocked from merge and a green fix, and verify direct pushes are rejected. |
 | Endpoint contract (25) | `docs/contract/submissions.md` specifies role, enrollment, request/response, problem details, idempotency, and side effects. | Keep final contract/review and test evidence linked from root `PA2.md`. |
-| Contract tests (15) | PostgreSQL-backed `TestSubmissionContract` checks error types, ownership/enrollment, idempotency, persistence, and rollback; CI sets `TEST_DATABASE_URL`. | Use verbose CI output to show named tests and capture a deliberate contract break with a red CI run. |
+| Contract tests (15) | PostgreSQL-backed `TestSubmissionContract` checks error types, ownership/enrollment, idempotency, persistence, and rollback; current CI log names 46 contract subtests. | Capture a deliberate contract break with a red CI run; branch protection is needed to prove it blocks merge. |
 | AI log (5) | `AI-LOG.md` records actual setup and implementation decisions, including changed and rejected choices. | Keep the current CI run and remaining settings/evidence gaps accurate through hand-in. |
 
 ### Remaining work before submission
@@ -267,13 +267,13 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 - [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
   - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
   - [x] Run `npm audit` against the committed frontend lockfile; see `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
-  - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `12caa1a` (run 42616773213).
+  - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `3c95afc` (run 42660477736).
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
 - [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
   - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.
   - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
-  - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42616773213](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616773213).
+  - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736).
   - [ ] Demonstrate that a real contract defect turns a required check red and blocks merge; preserve the red run and subsequent green fix run (H3/L5).
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
   - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
@@ -288,8 +288,8 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
   - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
 - [x] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
-  - [x] Run the README setup and all documented checks from a fresh clone at `3e4728c`.
-  - [x] Record the commit SHA and exact command results; all listed checks passed with the isolated PostgreSQL test DB. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
+  - [x] Run the README commands from a fresh GitHub Actions checkout at `3c95afc`; all listed CI checks passed.
+  - [x] Record the commit SHA, test count, and command results. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
 
 ### Evidence and submission
 

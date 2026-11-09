@@ -14,7 +14,7 @@
 ## Current implementation evidence
 
 - Quality-gate PR: [#6](https://github.com/longtoZ/AWAD-LeeTKOB/pull/6)
-- Latest green CI run before this draft: [run 42616773213](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616773213) (`gates`, `secret-history`, `e2e`). Update this link to the final green run after the last evidence change.
+- Latest green CI run: [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736) (`gates`, `secret-history`, `e2e`) on commit `3c95afc`. The Go log shows 5 named unit tests and 46 contract subtests. Update this link after any later evidence change.
 - The workflow runs the Go format check, `go vet`, PostgreSQL-backed API tests, frontend lint/format/type/build, full-history secret scan, `npm audit`, and a Playwright shell check.
 - `AI-LOG.md` records the assistant's work and setup incidents.
 
