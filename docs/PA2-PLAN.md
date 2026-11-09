@@ -1,5 +1,7 @@
 # PA2 Plan
 
+> **Current team status:** Read the [PA2 team handoff](PA2-HANDOFF.md) before continuing. This plan preserves project decisions and task history; the handoff is the current status and acceptance checklist.
+
 **Deadline:** Wednesday, November 11, 2026, at 22:00.  
 **Goal:** Prepare the development harness, a working quality gate, and the contract and tests for one LeeTKOB endpoint.
 

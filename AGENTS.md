@@ -1,5 +1,11 @@
 # Project rules
 
+## PA2 handoff gate
+
+- Before beginning any remaining PA#2 work, read [`docs/PA2-HANDOFF.md`](docs/PA2-HANDOFF.md). It is the current status, owner, prerequisite, and acceptance-check list for the team.
+- Do not mark an item done without its listed evidence. When status changes, update the handoff and the relevant PA2 evidence in the same change.
+- The official rubric in `docs/PA#2 rubric — Harness and quality gate.md` remains the scoring authority.
+
 ## Stack
 
 - Frontend: React, TypeScript, Vite, and npm in `frontend/`.

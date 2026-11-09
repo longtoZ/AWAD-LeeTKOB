@@ -2,6 +2,8 @@
 
 LeeTKOB supports C++ lab judging and constraint review before a TA publishes marks. See [the project brief](docs/LeeTKOB%20%E2%80%94%20class%20project%20brief.md) and [PA2 plan](docs/PA2-PLAN.md).
 
+For the PA#2 team, start with the [PA2 team handoff](docs/PA2-HANDOFF.md) before taking any remaining task.
+
 ## Stack
 
 - Frontend: React, TypeScript, Vite, and npm.
