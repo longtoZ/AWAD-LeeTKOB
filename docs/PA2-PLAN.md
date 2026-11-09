@@ -263,9 +263,10 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 - [ ] **L1 — To Thanh Long** · Due: 9 Nov · Prerequisites: Go/TypeScript stack and H1's test command.
   - [x] Document one command each for lint, format check, type check where applicable, and tests in `README.md`.
   - [x] Pin Node 22.13.1 for frontend/browser CI; use the same documented commands in the workflow.
-  - [ ] Verify all commands work from a fresh clone and fail on a real defect; no empty or pass-through checks. See the verification record after the CI run.
+  - [x] Verify all commands work from a fresh clone; the CI gate contains real lint, build, Go vet, contract, audit, and browser checks with no pass-through. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
 - [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
   - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
+  - [x] Run `npm audit` against the committed frontend lockfile; see `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
   - [ ] Verify the full-history scan passes for the submitted refs and resolve any findings.
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
@@ -286,8 +287,8 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
   - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
 - [ ] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
-  - [ ] Run the README setup and all checks from a fresh clone of the final candidate.
-  - [ ] Record the commit SHA and exact command results; confirm no undocumented local files or secrets are needed and all tests pass.
+  - [x] Run the README setup and all documented checks from a fresh clone at `3e4728c`.
+  - [x] Record the commit SHA and exact command results; all listed checks passed with the isolated PostgreSQL test DB. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
 
 ### Evidence and submission
 

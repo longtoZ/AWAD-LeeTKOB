@@ -9,9 +9,8 @@
 ## Commands
 
 - Install frontend dependencies: `cd frontend` then `npm ci`.
-- Run or build the frontend: `npm run dev` or `npm run build` from `frontend/`.
+- Run the frontend: `npm run dev` from `frontend/`; use the README command for lint, format, type, and build checks.
 - Start the local database: `docker compose up -d` from the root; host port is 5433. See `AI-LOG.md`, entry 1.
-- Run Go tests from `backend/`: `go test ./...` once Go packages exist.
 - Run the documented Go format check from the root: `node scripts/check-go-format.mjs`.
 - Run Go vet and tests from the root: `go -C backend vet ./...` and `go -C backend test ./... -count=1`.
 - Run frontend lint, formatting, type-check, and build with `npm run check --prefix frontend` after `npm ci`.
