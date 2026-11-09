@@ -28,6 +28,8 @@
 - Never make real model calls in unit tests; use a fake or stub.
 - Never change tests, eval data, or labels merely to make a check pass.
 - Never publish marks while required TA reviews are pending.
+- Never put environment values in `.env.example`; setup found values there and moved them to ignored `.env` (see `AI-LOG.md`, entry 2).
+- Never assume local PostgreSQL can bind host port 5432; a port conflict led to Compose using 5433 (see `AI-LOG.md`, entry 1).
 
 ## Permissions
 

@@ -73,10 +73,10 @@ Use Node.js 22.13.1 and Go 1.26 or newer. From the repository root, run the same
 
 | Check | Command |
 |---|---|
-| Frontend lint, format, type-check, and build | `npm ci && npm run check --prefix frontend` |
+| Frontend lint, format, type-check, and build | `npm ci --prefix frontend && npm run check --prefix frontend` |
 | Go format check | `node scripts/check-go-format.mjs` |
 | Go vet | `go -C backend vet ./...` |
-| Backend unit and PostgreSQL contract tests | `go -C backend test ./... -count=1` |
+| Backend unit and PostgreSQL contract tests | `go -C backend test ./... -count=1 -v` |
 | Dependency audit | `npm audit --prefix frontend` |
 | Browser smoke test | `npm ci --prefix frontend && npx --prefix frontend playwright install chromium && npm run e2e --prefix frontend` |
 

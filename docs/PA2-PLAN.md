@@ -206,27 +206,27 @@ Completed so far:
 
 **Tag note:** `PA2.md` must link to the tag's CI run. Arrange the final commit and tag workflow so the tagged commit contains the required evidence; if the tag CI link is not known in advance, document how to locate the run from the tag and include the direct link when available.
 
-## PA2 readiness as of 8 November 2026
+## PA2 readiness as of 9 November 2026
 
 The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/submissions.md and the team's existing plan. Keep this choice consistent in the contract, tests, CI evidence, and hand-in.
 
 | PA2 criterion | Current repository evidence | Remaining acceptance check |
 |---|---|---|
-| Rules file (15) | AGENTS.md has stack, commands, conventions, never, and permission tiers. AI-LOG.md records two setup problems. | Confirm two product rules trace to real commits or contemporaneous AI-LOG entries. |
-| Permissions and secrets (10) | .env.example now lists variable names without values; .gitignore excludes local .env. README says the proposed US$10 budget is not enforced. | Scan the full history; configure and document an actual model API spending cap. Do not claim a cap is enforced until verified. |
-| One command per check (10) | README currently documents setup and frontend build only. No lint, format check, type-check, or test scripts are present. | Add one command per applicable check, run each from a fresh clone, and use those same commands in CI. |
-| CI blocks merge (20) | No workflow exists in this repository snapshot. Branch protection is a GitHub setting, not represented by tracked files. | Add PR and pa2 tag workflows, require all checks on main, capture settings, and demonstrate a blocked red PR followed by a green fix. |
-| Endpoint contract (25) | docs/contract/submissions.md specifies role, enrollment, request/response, problem details, idempotency, and side effects. | Peer-review the contract and settle unclear field or retry behavior before implementation/tests. |
-| Contract tests (15) | docs/contract/submissions-test-scenarios.md is a scenario list, not an automated test suite. No endpoint implementation is present yet. | Implement tests from the frozen contract, run them in CI, and show a deliberate contract break failing before its code fix. |
-| AI log (5) | AI-LOG.md records setup decisions and changes. | Continue recording this work honestly, including changes or rejections and which check caught them. |
+| Rules file (15) | `AGENTS.md` has stack, commands, conventions, never, and permission tiers. Two new setup-specific “Never” rules link to the port conflict and example-environment-value incidents in `AI-LOG.md` entries 1–2. | Keep the rules concise and verify the links still describe real incidents. |
+| Permissions and secrets (10) | `.env.example` contains variable names only; `.gitignore` excludes `.env`; full-history `secret-history` scan passed on PR refs in run 42616773213. README says the proposed US$10 budget is not enforced. | Configure and document an actual provider or application spending cap. |
+| One command per check (10) | README documents frontend, Go, audit, and browser checks; CI runs frontend checks, Go format/vet/tests, audit, and E2E. Fresh-clone checks are recorded below. | Keep the README commands runnable from the stated repository root and identical to CI; verify the updated verbose test command. |
+| CI blocks merge (20) | `gates`, `secret-history`, and `e2e` run on PRs and passed on run 42616773213. | Configure required checks on protected `main`, demonstrate a red contract-breaking PR blocked from merge and a green fix, and verify direct pushes are rejected. |
+| Endpoint contract (25) | `docs/contract/submissions.md` specifies role, enrollment, request/response, problem details, idempotency, and side effects. | Keep final contract/review and test evidence linked from root `PA2.md`. |
+| Contract tests (15) | PostgreSQL-backed `TestSubmissionContract` checks error types, ownership/enrollment, idempotency, persistence, and rollback; CI sets `TEST_DATABASE_URL`. | Use verbose CI output to show named tests and capture a deliberate contract break with a red CI run. |
+| AI log (5) | `AI-LOG.md` records actual setup and implementation decisions, including changed and rejected choices. | Keep the current CI run and remaining settings/evidence gaps accurate through hand-in. |
 
 ### Remaining work before submission
 
-1. Finish the secret-history review and configure the actual spending cap.
+1. Keep the secret scan green and configure the actual spending cap.
 2. Preserve the H1 historical test-first evidence if it exists; complete any remaining contract fault-injection scenarios and keep the verified endpoint tests green.
-3. Add the four local checks and matching CI jobs; confirm they fail on a deliberate contract violation.
-4. Protect main, capture evidence, and keep later changes on PRs.
-5. Complete root PA2.md and SELF_ASSESSMENT_REPORT.md; verify the pa2 tag CI, ZIP contents, ascending student IDs, score, and student-account submission by 11 November 2026, 22:00 Vietnam time.
+3. Keep the README commands runnable from the repository root and identical to CI; show named unit/contract tests in the job log.
+4. Protect `main`, capture the blocked-break/fixed-green evidence, and keep later changes on PRs.
+5. Make the repository public, then complete root `PA2.md` and `SELF_ASSESSMENT_REPORT.md`; verify the `pa2` tag CI, ZIP contents, ascending student IDs, score, and student-account submission by 11 November 2026, 22:00 Vietnam time.
 
 This status describes the repository snapshot and must be refreshed as work lands. A documented plan or scenario is not evidence that implementation, tests, branch protection, or a passing CI run exists.
 
@@ -267,13 +267,13 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 - [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
   - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
   - [x] Run `npm audit` against the committed frontend lockfile; see `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
-  - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `700a07d` (run 42616431192).
+  - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `12caa1a` (run 42616773213).
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
 - [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
   - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.
   - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
-  - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42616431192](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616431192).
+  - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42616773213](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616773213).
   - [ ] Demonstrate that a real contract defect turns a required check red and blocks merge; preserve the red run and subsequent green fix run (H3/L5).
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
   - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
@@ -299,6 +299,8 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 - [ ] **K4 — Tran Anh Khoa** · Due: 10 Nov · Prerequisites: H4 and K3.
   - [ ] Complete `SELF_ASSESSMENT_REPORT.md` with one evidence-backed row per rubric criterion, an honest “What we did not manage” section, and a total matching the ZIP filename.
   - [ ] Prepare a ZIP containing `.git` and required files; use team IDs in ascending order.
+
+**Evidence draft note (10 Nov 2026):** Root `PA2.md` and `SELF_ASSESSMENT_REPORT.md` now contain the evidence available and mark unresolved items. They are not submission-ready: final settings/break/tag evidence, the team's student IDs, and team confirmation of the proposed score are still needed.
 - [ ] **K5 — Tran Anh Khoa** · Due: 11 Nov, before 22:00 · Prerequisites: K4 and an active member `<StudentID>@student.hcmus.edu.vn` Google account.
   - [ ] Tag the assessed public main commit `pa2` and push the tag.
   - [ ] Verify the tag's CI run is green and link it in `PA2.md`.
