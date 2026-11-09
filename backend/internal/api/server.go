@@ -23,5 +23,6 @@ func (s *Server) Routes() http.Handler {
 }
 
 func (s *Server) validOrigin(r *http.Request) bool {
-	return r.Header.Get("Origin") == s.Origin && s.Origin != ""
+	values := r.Header.Values("Origin")
+	return s.Origin != "" && len(values) == 1 && values[0] == s.Origin
 }

@@ -223,7 +223,7 @@ The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/
 ### Remaining work before submission
 
 1. Finish the secret-history review and configure the actual spending cap.
-2. Implement the endpoint and automated contract tests from the frozen contract.
+2. Preserve the H1 historical test-first evidence if it exists; complete any remaining contract fault-injection scenarios and keep the verified endpoint tests green.
 3. Add the four local checks and matching CI jobs; confirm they fail on a deliberate contract violation.
 4. Protect main, capture evidence, and keep later changes on PRs.
 5. Complete root PA2.md and SELF_ASSESSMENT_REPORT.md; verify the pa2 tag CI, ZIP contents, ascending student IDs, score, and student-account submission by 11 November 2026, 22:00 Vietnam time.
@@ -249,10 +249,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 
 **Completion note (9 Nov 2026):** K1 and K2 are marked complete per Tran Anh Khoa's confirmation. Add the contract freeze SHA/test checklist and the product-owner FAQ answer or documented no-answer assumption to `PA2.md` before hand-in.
 - [ ] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract.
-- [ ] Write Go HTTP contract tests before endpoint behavior for success, each contract error type, enrolled/unenrolled students, non-student role, same-key/same-body replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior where implemented. Tests now cover these behaviors, but the initial red run was not preserved before implementation.
-  - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions. See `backend/internal/api/api_test.go`.
-  - [ ] Save the initial expected failing output and keep tests unchanged while implementing the code.
-- [ ] **H2 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H1's red tests and the existing Go module.
+  - [x] Cover success, every contract error type, enrolled/unenrolled students, non-student roles, replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior in Go HTTP tests. See `backend/internal/api/api_test.go`.
+  - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
+  - [x] Save the observed failing test for the duplicate-Origin defect before its fix, then the passing PostgreSQL suite. See `docs/PA2-H1-H2-VERIFICATION.md`.
+  - [ ] Supply the **original** expected failing output from before endpoint implementation, if it exists. The endpoint was implemented before this follow-up and that run was not preserved; do not claim the new red run is the original one.
+- [x] **H2 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H1's red tests and the existing Go module. The implementation is verified; the original test-first sequence is still an H1 evidence gap.
   - [x] Implement the real `POST /labs/{labId}/submissions` handler.
   - [x] Verify identity and enrollment come from server-side state; tests check problem response structure and statuses.
   - [x] Run the PostgreSQL contract suite successfully; no model calls or sandbox execution are part of this PA2 endpoint.

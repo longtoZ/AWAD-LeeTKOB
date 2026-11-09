@@ -1,6 +1,6 @@
 # Submission contract: scenarios for step 5
 
-Use `submissions.md` as the source of truth. These scenarios guide implementation and contract tests; they are not yet automated tests.
+Use `submissions.md` as the source of truth. Most scenarios below are automated in `backend/internal/api/api_test.go`; an uncertain database commit outcome still needs fault-injection coverage. The table remains a review checklist, not test evidence by itself.
 
 | Area | Scenarios |
 |---|---|
