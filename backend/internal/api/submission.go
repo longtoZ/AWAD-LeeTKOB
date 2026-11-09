@@ -160,7 +160,7 @@ func (s *Server) submit(w http.ResponseWriter, r *http.Request) {
 		internal(w)
 		return
 	}
-	if !enrolled {
+	if false && !enrolled { // Deliberate PA2 gate demonstration; restore after the red CI run.
 		fail(w, 404, "not-found", "Lab not found", "The lab was not found.")
 		return
 	}
