@@ -69,4 +69,23 @@ An illustrative estimate for 80 model calls, each using 2,000 input and 500 outp
 
 ## PA2 checks
 
-Lint, format, type-check, and test commands and CI are part of the next steps in [PA2-PLAN.md](docs/PA2-PLAN.md). The frontend build above is available once dependencies are installed.
+Use Node.js 22.13.1 and Go 1.26 or newer. From the repository root, run the same checks used by the `gates` workflow:
+
+| Check | Command |
+|---|---|
+| Frontend lint, format, type-check, and build | `npm ci && npm run check --prefix frontend` |
+| Go format check | `node scripts/check-go-format.mjs` |
+| Go vet | `go -C backend vet ./...` |
+| Backend unit and PostgreSQL contract tests | `go -C backend test ./... -count=1` |
+| Dependency audit | `npm audit --prefix frontend` |
+| Browser smoke test | `npm ci --prefix frontend && npx --prefix frontend playwright install chromium && npm run e2e --prefix frontend` |
+
+The database-backed Go tests require `TEST_DATABASE_URL`; CI starts PostgreSQL and sets it so the integration suite cannot silently skip. The browser smoke test checks that the app shell renders. It does not replace API contract tests.
+
+CI runs the `gates`, `secret-history`, and `e2e` jobs on pull requests, pushes to `main`, and the `pa2` tag. Configure `gates`, `secret-history`, and `e2e` as required checks in GitHub branch protection. A passing workflow run alone does not configure branch protection.
+
+`npm audit` checks the frontend dependency tree. The evaluated lint-toolchain versions in `package.json` use a targeted `minimatch` override to avoid the advisory in the compatible upstream dependency range; review the override when upgrading that toolchain.
+
+## Spending cap status
+
+The model integration is not implemented. The proposed US$10 budget is not an enforced provider limit. Before connecting a model, configure a provider-side cap or an application-side hard limit, verify it, and update this section with the measured cost boundary. Do not treat the illustrative US$0.10 estimate above as a cap.

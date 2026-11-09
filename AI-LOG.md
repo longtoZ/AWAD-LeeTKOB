@@ -36,3 +36,10 @@ Tool used: Codex, for planning and initial project setup.
 - **Problem:** The handler accepted a request with two `Origin` header values when the first matched the configured origin. Several contract scenarios lacked exact error-type or persistence assertions. The original pre-implementation red output was not retained.
 - **Changed:** Codex added a failing duplicate-Origin test, changed validation to require exactly one matching value, and expanded PostgreSQL HTTP tests for contract errors, ordering, ownership, idempotency, rollback, source boundaries, and expired sessions.
 - **Evidence:** `docs/PA2-H1-H2-VERIFICATION.md` records the observed local red and green runs. This is follow-up test evidence, not the original test-first run or the required CI break PR.
+
+## 6. PA2 checks and CI
+
+- **Task:** Add the highest-priority reproducible checks and a required-ready quality gate, following the course harness Session 7 guidance.
+- **Changed:** Codex added frontend lint/format/type/build commands, a Go format check, CI jobs for Go/PostgreSQL and frontend checks, a full-history secret scan, and a separate Playwright shell check. README and `AGENTS.md` now list the commands CI runs. The lockfile audit exposed a moderate `minimatch` advisory in the lint toolchain; a scoped override removed the reported findings.
+- **Observed:** Running Vite from the requested local `PA#2` path fails because `#` in that filesystem path is parsed as a URL fragment. The same checks will be verified from a fresh clone in a path without `#`; this environment-specific failure is not hidden.
+- **Remaining:** GitHub branch protection and the provider spending cap are account/provider settings. No CI green run or enforced cap is claimed until each is actually verified.

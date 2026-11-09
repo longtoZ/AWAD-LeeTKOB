@@ -261,18 +261,18 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 ### Local checks, CI, and branch protection
 
 - [ ] **L1 — To Thanh Long** · Due: 9 Nov · Prerequisites: Go/TypeScript stack and H1's test command.
-  - [ ] Document one command each for lint, format check, type check where applicable, and tests.
-  - [ ] Use Node 22.13+ consistently for frontend/browser checks and use the same documented commands locally and in CI.
-  - [ ] Verify commands work from a fresh clone and fail on a real defect; no empty or pass-through checks.
+  - [x] Document one command each for lint, format check, type check where applicable, and tests in `README.md`.
+  - [x] Pin Node 22.13.1 for frontend/browser CI; use the same documented commands in the workflow.
+  - [ ] Verify all commands work from a fresh clone and fail on a real defect; no empty or pass-through checks. See the verification record after the CI run.
 - [ ] **L2 — To Thanh Long** · Due: 9 Nov · Prerequisite: Khoa confirms the provider/key choice.
-  - [ ] Confirm `.env.example` lists names only and scan the full repository history and available refs for secrets.
+  - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
+  - [ ] Verify the full-history scan passes for the submitted refs and resolve any findings.
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
 - [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
-  - [ ] Run every documented check in PR CI with the same command; use Node 22.13+ and do not swallow failures.
-  - [ ] Add `npm run e2e` with Playwright/Chromium in a separate `e2e` job; open `/` and verify the LeeTKOB app shell renders. Keep this smoke check separate from API contract evidence.
-  - [ ] Make `gates` and `e2e` fail on real defects and run the required suite on the `pa2` tag.
-  - [ ] Link the workflow and green CI run.
+  - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.
+  - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
+  - [ ] Confirm the GitHub jobs pass and fail on real defects; link the workflow and green CI run.
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
   - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
   - [ ] Verify a direct push to `main` is rejected.
