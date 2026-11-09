@@ -238,14 +238,16 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 
 ### Contract and tests
 
-- [ ] **K1 — Tran Anh Khoa** · Due: 8 Nov · Prerequisite: existing contract draft.
+- [x] **K1 — Tran Anh Khoa** · Due: 8 Nov · Prerequisite: existing contract draft.
   - [x] Team peer-reviewed `docs/contract/submissions.md`.
-  - [ ] Freeze the reviewed contract against the class brief and any available product-owner FAQ answer.
-  - [ ] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
-  - [ ] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
-- [ ] **K2 — Tran Anh Khoa** · Due: 8 Nov; recheck 10 Nov · Prerequisite: K1's list of unanswered decisions.
-  - [ ] Ask the product owners the exact behavior questions left open by the brief.
-  - [ ] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
+  - [x] Freeze the reviewed contract against the class brief and any available product-owner FAQ answer.
+  - [x] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
+  - [x] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
+- [x] **K2 — Tran Anh Khoa** · Due: 8 Nov; recheck 10 Nov · Prerequisite: K1's list of unanswered decisions.
+  - [x] Ask the product owners the exact behavior questions left open by the brief.
+  - [x] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
+
+**Completion note (9 Nov 2026):** K1 and K2 are marked complete per Tran Anh Khoa's confirmation. Add the contract freeze SHA/test checklist and the product-owner FAQ answer or documented no-answer assumption to `PA2.md` before hand-in.
 - [ ] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract.
 - [ ] Write Go HTTP contract tests before endpoint behavior for success, each contract error type, enrolled/unenrolled students, non-student role, same-key/same-body replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior where implemented. Tests now cover these behaviors, but the initial red run was not preserved before implementation.
   - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions. See `backend/internal/api/api_test.go`.
