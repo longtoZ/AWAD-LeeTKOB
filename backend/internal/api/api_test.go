@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/alexedwards/scs/pgxstore"
 	"github.com/alexedwards/scs/v2"
@@ -60,6 +61,11 @@ func TestOriginMustMatchConfiguredValue(t *testing.T) {
 	r.Header.Set("Origin", "https://other.test")
 	if s.validOrigin(r) {
 		t.Fatal("unexpected origin accepted")
+	}
+	r.Header.Set("Origin", "https://leetkob.test")
+	r.Header.Add("Origin", "https://other.test")
+	if s.validOrigin(r) {
+		t.Fatal("multiple Origin values accepted")
 	}
 }
 
@@ -159,6 +165,16 @@ func TestSubmissionContract(t *testing.T) {
 		}
 		return out
 	}
+	expectProblem := func(t *testing.T, out *httptest.ResponseRecorder, status int, slug, title string) {
+		t.Helper()
+		var got problem
+		if err := json.Unmarshal(out.Body.Bytes(), &got); err != nil {
+			t.Fatal(err)
+		}
+		if out.Code != status || out.Header().Get("Content-Type") != "application/problem+json" || got.Type != "https://leetkob.example/problems/"+slug || got.Title != title || got.Status != status || got.Detail == "" {
+			t.Fatalf("unexpected problem: HTTP %d, body %s", out.Code, out.Body.String())
+		}
+	}
 	login := func(email string) *http.Cookie {
 		out := request("POST", "/auth/login", fmt.Sprintf(`{"email":%q,"password":"test-password"}`, email), nil, "", "http://localhost:5173")
 		if out.Code != 204 {
@@ -202,9 +218,7 @@ func TestSubmissionContract(t *testing.T) {
 		req.Header.Set("Content-Type", "text/plain")
 		out := httptest.NewRecorder()
 		h.ServeHTTP(out, req)
-		if out.Code != 415 {
-			t.Fatal(out.Code)
-		}
+		expectProblem(t, out, 415, "unsupported-media-type", "Unsupported media type")
 	})
 	t.Run("in-flight key", func(t *testing.T) {
 		tx, err := db.Begin(ctx)
@@ -216,9 +230,7 @@ func TestSubmissionContract(t *testing.T) {
 			t.Fatal(err)
 		}
 		out := request("POST", path, `{"source":"x"}`, cookie, "busy", origin)
-		if out.Code != 409 {
-			t.Fatal(out.Code, out.Body.String())
-		}
+		expectProblem(t, out, 409, "idempotency-key-in-flight", "Request in progress")
 	})
 	t.Run("job insert rollback", func(t *testing.T) {
 		if _, err := db.Exec(ctx, "ALTER TABLE jobs ADD CONSTRAINT reject_test_job CHECK (false) NOT VALID"); err != nil {
@@ -226,12 +238,25 @@ func TestSubmissionContract(t *testing.T) {
 		}
 		defer db.Exec(ctx, "ALTER TABLE jobs DROP CONSTRAINT reject_test_job")
 		out := request("POST", path, `{"source":"rollback-test"}`, cookie, "rollback", origin)
-		if out.Code != 503 {
-			t.Fatal(out.Code, out.Body.String())
+		expectProblem(t, out, 503, "unavailable", "Service unavailable")
+		for _, query := range []string{
+			"SELECT count(*) FROM submissions WHERE source=$1",
+			"SELECT count(*) FROM jobs WHERE submission_id IN (SELECT id FROM submissions WHERE source=$1)",
+		} {
+			var count int
+			if err := db.QueryRow(ctx, query, []byte("rollback-test")).Scan(&count); err != nil || count != 0 {
+				t.Fatal(query, count, err)
+			}
 		}
-		var count int
-		if err := db.QueryRow(ctx, "SELECT count(*) FROM submissions WHERE source=$1", []byte("rollback-test")).Scan(&count); err != nil || count != 0 {
-			t.Fatal(count, err)
+		var keyCount int
+		if err := db.QueryRow(ctx, "SELECT count(*) FROM idempotency_keys WHERE student_id=$1 AND lab_id=$2 AND key='rollback'", student, lab).Scan(&keyCount); err != nil || keyCount != 0 {
+			t.Fatal("rolled-back key retained", keyCount, err)
+		}
+	})
+	t.Run("retry after rollback", func(t *testing.T) {
+		out := request("POST", path, `{"source":"rollback-test"}`, cookie, "rollback", origin)
+		if out.Code != 201 {
+			t.Fatal(out.Code, out.Body.String())
 		}
 	})
 	t.Run("unexpected database error", func(t *testing.T) {
@@ -240,9 +265,7 @@ func TestSubmissionContract(t *testing.T) {
 		}
 		defer db.Exec(ctx, "ALTER TABLE users_unavailable RENAME TO users")
 		out := request("POST", path, `{"source":"x"}`, cookie, "error", origin)
-		if out.Code != 500 || !strings.Contains(out.Body.String(), "/internal") {
-			t.Fatal(out.Code, out.Body.String())
-		}
+		expectProblem(t, out, 500, "internal", "Internal error")
 	})
 	t.Run("origin", func(t *testing.T) {
 		if out := request("POST", path, `{"source":"x"}`, cookie, "key", ""); out.Code != 403 {
@@ -253,6 +276,48 @@ func TestSubmissionContract(t *testing.T) {
 		if out := request("POST", path, `{"source":"x"}`, cookie, "", origin); out.Code != 400 {
 			t.Fatal(out.Code)
 		}
+	})
+	t.Run("contract error matrix", func(t *testing.T) {
+		for _, tc := range []struct {
+			name, path, body, key, origin, slug, title string
+			cookie                                     *http.Cookie
+			status                                     int
+		}{
+			{"unauthenticated", path, `{"source":"x"}`, "case-auth", origin, "unauthenticated", "Authentication required", nil, 401},
+			{"non-student admin", path, `{"source":"x"}`, "case-role", origin, "forbidden", "Forbidden", adminCookie, 403},
+			{"unenrolled", path, `{"source":"x"}`, "case-enrollment", origin, "not-found", "Lab not found", otherCookie, 404},
+			{"missing lab", "/labs/" + uuid.NewString() + "/submissions", `{"source":"x"}`, "case-lab", origin, "not-found", "Lab not found", cookie, 404},
+			{"invalid lab id", "/labs/not-a-uuid/submissions", `{"source":"x"}`, "case-lab-id", origin, "not-found", "Lab not found", cookie, 404},
+			{"missing origin", path, `{"source":"x"}`, "case-origin", "", "invalid-origin", "Invalid origin", cookie, 403},
+			{"wrong origin", path, `{"source":"x"}`, "case-origin", "https://other.test", "invalid-origin", "Invalid origin", cookie, 403},
+			{"missing key", path, `{"source":"x"}`, "", origin, "invalid-idempotency-key", "Invalid idempotency key", cookie, 400},
+			{"invalid key", path, `{"source":"x"}`, "invalid key", origin, "invalid-idempotency-key", "Invalid idempotency key", cookie, 400},
+			{"overlong key", path, `{"source":"x"}`, strings.Repeat("x", 129), origin, "invalid-idempotency-key", "Invalid idempotency key", cookie, 400},
+			{"oversized body", path, strings.Repeat("x", 256*1024+1), "case-large", origin, "payload-too-large", "Payload too large", cookie, 413},
+			{"malformed json", path, `{`, "case-json", origin, "invalid-json", "Malformed JSON", cookie, 400},
+			{"duplicate key", path, `{"source":"x","source":"y"}`, "case-duplicate", origin, "invalid-json", "Malformed JSON", cookie, 400},
+			{"multiple values", path, `{"source":"x"} {}`, "case-trailing", origin, "invalid-json", "Malformed JSON", cookie, 400},
+			{"invalid UTF-8", path, string([]byte{'{', '"', 's', 'o', 'u', 'r', 'c', 'e', '"', ':', '"', 0xff, '"', '}'}), "case-utf8", origin, "invalid-json", "Malformed JSON", cookie, 400},
+			{"non-object", path, `[]`, "case-array", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"missing source", path, `{}`, "case-missing-source", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"null source", path, `{"source":null}`, "case-null", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"non-string source", path, `{"source":1}`, "case-number", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"empty source", path, `{"source":""}`, "case-empty", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"unknown field", path, `{"source":"x","owner":"other"}`, "case-unknown", origin, "invalid-request", "Invalid request", cookie, 400},
+			{"oversized source", path, fmt.Sprintf(`{"source":%q}`, strings.Repeat("x", 128*1024+1)), "case-source-large", origin, "invalid-request", "Invalid request", cookie, 400},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				expectProblem(t, request("POST", tc.path, tc.body, tc.cookie, tc.key, tc.origin), tc.status, tc.slug, tc.title)
+			})
+		}
+	})
+	t.Run("check order stops at the first failure", func(t *testing.T) {
+		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, nil, "", ""), 401, "unauthenticated", "Authentication required")
+		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, taCookie, "", ""), 403, "forbidden", "Forbidden")
+		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, cookie, "", ""), 403, "invalid-origin", "Invalid origin")
+		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, cookie, "", origin), 404, "not-found", "Lab not found")
+		expectProblem(t, request("POST", path, `{`, cookie, "", origin), 400, "invalid-idempotency-key", "Invalid idempotency key")
+		expectProblem(t, request("POST", path, `{`, cookie, "order-json", origin), 400, "invalid-json", "Malformed JSON")
 	})
 	t.Run("malformed JSON", func(t *testing.T) {
 		if out := request("POST", path, `{`, cookie, "malformed", origin); out.Code != 400 {
@@ -266,12 +331,26 @@ func TestSubmissionContract(t *testing.T) {
 	})
 	t.Run("creation and replay", func(t *testing.T) {
 		first := request("POST", path, `{"source":"hello"}`, cookie, "same", origin)
-		if first.Code != 201 {
+		if first.Code != 201 || first.Header().Get("Content-Type") != "application/json" || first.Header().Get("Idempotent-Replayed") != "" {
 			t.Fatalf("%d %s", first.Code, first.Body.String())
 		}
 		var resource submission
 		if err := json.Unmarshal(first.Body.Bytes(), &resource); err != nil || resource.Status != "queued" || resource.LabID != lab {
-			t.Fatal("bad response")
+			t.Fatal("bad response", err)
+		}
+		if _, err := uuid.Parse(resource.ID); err != nil {
+			t.Fatal("submission ID is not a UUID", err)
+		}
+		if parsed, err := time.Parse(time.RFC3339Nano, resource.CreatedAt); err != nil || parsed.Location() != time.UTC {
+			t.Fatal("createdAt is not RFC 3339 UTC", resource.CreatedAt, err)
+		}
+		var owner, status string
+		var source []byte
+		if err := db.QueryRow(ctx, "SELECT student_id, source FROM submissions WHERE id=$1", resource.ID).Scan(&owner, &source); err != nil || owner != student || !bytes.Equal(source, []byte("hello")) {
+			t.Fatal("submission ownership or source changed", owner, err)
+		}
+		if err := db.QueryRow(ctx, "SELECT status FROM jobs WHERE submission_id=$1", resource.ID).Scan(&status); err != nil || status != "pending" {
+			t.Fatal("durable pending job missing", status, err)
 		}
 		retry := request("POST", path, `{ "source": "hello" }`, cookie, "same", origin)
 		if retry.Code != 201 || retry.Header().Get("Idempotent-Replayed") != "true" || !bytes.Equal(first.Body.Bytes(), retry.Body.Bytes()) {
@@ -283,8 +362,28 @@ func TestSubmissionContract(t *testing.T) {
 		}
 	})
 	t.Run("key reuse", func(t *testing.T) {
-		if out := request("POST", path, `{"source":"different"}`, cookie, "same", origin); out.Code != 422 {
-			t.Fatal(out.Code)
+		expectProblem(t, request("POST", path, `{"source":"different"}`, cookie, "same", origin), 422, "idempotency-key-reused", "Idempotency key reused")
+	})
+	t.Run("key retained after 23 hours", func(t *testing.T) {
+		if _, err := db.Exec(ctx, "UPDATE idempotency_keys SET created_at=now()-interval '23 hours' WHERE student_id=$1 AND lab_id=$2 AND key='same'", student, lab); err != nil {
+			t.Fatal(err)
+		}
+		out := request("POST", path, `{"source":"hello"}`, cookie, "same", origin)
+		if out.Code != 201 || out.Header().Get("Idempotent-Replayed") != "true" {
+			t.Fatal(out.Code, out.Body.String())
+		}
+	})
+	t.Run("same key in another lab", func(t *testing.T) {
+		secondLab := uuid.NewString()
+		if _, err := db.Exec(ctx, "INSERT INTO labs VALUES ($1,'Second lab')", secondLab); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.Exec(ctx, "INSERT INTO enrollments VALUES ($1,$2)", secondLab, student); err != nil {
+			t.Fatal(err)
+		}
+		out := request("POST", "/labs/"+secondLab+"/submissions", `{"source":"hello"}`, cookie, "same", origin)
+		if out.Code != 201 || out.Header().Get("Idempotent-Replayed") != "" {
+			t.Fatal(out.Code, out.Body.String())
 		}
 	})
 	t.Run("source bytes preserved", func(t *testing.T) {
@@ -304,6 +403,17 @@ func TestSubmissionContract(t *testing.T) {
 			t.Fatal("source bytes changed")
 		}
 	})
+	t.Run("whitespace source and 128 KiB boundary", func(t *testing.T) {
+		for _, tc := range []struct{ key, source string }{
+			{"whitespace", " \n\t"},
+			{"source-boundary", strings.Repeat("x", 128*1024)},
+		} {
+			out := request("POST", path, fmt.Sprintf(`{"source":%q}`, tc.source), cookie, tc.key, origin)
+			if out.Code != 201 {
+				t.Fatal(tc.key, out.Code, out.Body.String())
+			}
+		}
+	})
 	t.Run("admin enrolls student", func(t *testing.T) {
 		enrollPath := "/labs/" + lab + "/enrollments"
 		body := fmt.Sprintf(`{"studentId":%q}`, other)
@@ -316,6 +426,19 @@ func TestSubmissionContract(t *testing.T) {
 		if out := request("POST", path, `{"source":"new"}`, otherCookie, "enrolled", origin); out.Code != 201 {
 			t.Fatal(out.Code, out.Body.String())
 		}
+		out := request("POST", path, `{"source":"hello"}`, otherCookie, "same", origin)
+		if out.Code != 201 || out.Header().Get("Idempotent-Replayed") != "" {
+			t.Fatal("key incorrectly shared across students", out.Code, out.Body.String())
+		}
+	})
+	t.Run("invalid and expired sessions", func(t *testing.T) {
+		invalid := &http.Cookie{Name: cookie.Name, Value: "invalid-session-token"}
+		expectProblem(t, request("POST", path, `{"source":"x"}`, invalid, "invalid-session", origin), 401, "unauthenticated", "Authentication required")
+		expired := login("student@example.test")
+		if _, err := db.Exec(ctx, "UPDATE sessions SET expiry=now()-interval '1 second' WHERE token=$1", expired.Value); err != nil {
+			t.Fatal(err)
+		}
+		expectProblem(t, request("POST", path, `{"source":"x"}`, expired, "expired-session", origin), 401, "unauthenticated", "Authentication required")
 	})
 	t.Run("logout", func(t *testing.T) {
 		out := request("POST", "/auth/logout", "", cookie, "", origin)

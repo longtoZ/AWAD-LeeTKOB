@@ -29,3 +29,10 @@ Tool used: Codex, for planning and initial project setup.
 - **Changed:** Codex added SCS-backed sessions, versioned migrations, and an atomic submission/job insert. PostgreSQL contract checks run in an isolated temporary schema.
 - **Changed:** PostgreSQL `text` cannot store a NUL byte, although the contract allows it in a source string. A second migration stores source as bytes; a contract check verifies preservation.
 - **Remaining:** Complete the team's contract review, cover the remaining contract scenarios, and run the checks in required CI.
+
+## 5. H1/H2 contract follow-up
+
+- **Task:** Recheck H1/H2 against the frozen submission contract after pulling `main` at `9f25fab`.
+- **Problem:** The handler accepted a request with two `Origin` header values when the first matched the configured origin. Several contract scenarios lacked exact error-type or persistence assertions. The original pre-implementation red output was not retained.
+- **Changed:** Codex added a failing duplicate-Origin test, changed validation to require exactly one matching value, and expanded PostgreSQL HTTP tests for contract errors, ordering, ownership, idempotency, rollback, source boundaries, and expired sessions.
+- **Evidence:** `docs/PA2-H1-H2-VERIFICATION.md` records the observed local red and green runs. This is follow-up test evidence, not the original test-first run or the required CI break PR.
