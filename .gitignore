@@ -6,6 +6,8 @@ node_modules/
 *.tsbuildinfo
 dist/
 coverage/
+frontend/playwright-report/
+frontend/test-results/
 *.log
 backend/bin/
 backend/coverage.out

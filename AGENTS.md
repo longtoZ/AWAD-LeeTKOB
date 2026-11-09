@@ -9,10 +9,12 @@
 ## Commands
 
 - Install frontend dependencies: `cd frontend` then `npm ci`.
-- Run or build the frontend: `npm run dev` or `npm run build` from `frontend/`.
+- Run the frontend: `npm run dev` from `frontend/`; use the README command for lint, format, type, and build checks.
 - Start the local database: `docker compose up -d` from the root; host port is 5433. See `AI-LOG.md`, entry 1.
-- Run Go tests from `backend/`: `go test ./...` once Go packages exist.
-- Document the final lint, formatting, type-check, and test commands in the README; run those same commands in CI.
+- Run the documented Go format check from the root: `node scripts/check-go-format.mjs`.
+- Run Go vet and tests from the root: `go -C backend vet ./...` and `go -C backend test ./... -count=1`.
+- Run frontend lint, formatting, type-check, and build with `npm run check --prefix frontend` after `npm ci`.
+- Run those same commands in CI; do not let a CI step hide failures.
 
 ## Conventions
 
@@ -26,6 +28,8 @@
 - Never make real model calls in unit tests; use a fake or stub.
 - Never change tests, eval data, or labels merely to make a check pass.
 - Never publish marks while required TA reviews are pending.
+- Never put environment values in `.env.example`; setup found values there and moved them to ignored `.env` (see `AI-LOG.md`, entry 2).
+- Never assume local PostgreSQL can bind host port 5432; a port conflict led to Compose using 5433 (see `AI-LOG.md`, entry 1).
 
 ## Permissions
 
