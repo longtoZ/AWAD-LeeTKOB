@@ -4,20 +4,20 @@
 
 Submitted by: Tran Anh Khoa, Pham Bao Huy, To Thanh Long — student IDs to be added in ascending order.
 
-Proposed total to review: **75 / 100**
+Proposed total to review: **80 / 100**
 
 | Criterion | Max | Proposed claim | Evidence and remaining gap |
 |---|---:|---:|---|
 | Rules file | 15 | 13 | `AGENTS.md` covers stack, commands, conventions, never rules, and permission tiers. Two setup-specific rules link to incidents in `AI-LOG.md`. Team should confirm each line reflects a real incident. |
-| Permissions and secrets | 10 | 8 | `.env.example`, `.gitignore`, `AGENTS.md` permissions, and green full-history secret scan in [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736). No provider/application spending cap is enforced. |
-| One command per check | 10 | 9 | Root-level README commands match the `gates` workflow and passed on fresh GitHub Actions checkout in [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736). |
-| CI that blocks a merge | 20 | 11 | CI runs on every PR and has green runs; [run 42616143908](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42616143908) went red while the Gitleaks permission was being corrected. Branch protection and the deliberate blocked-break/fix evidence are still missing. |
+| Permissions and secrets | 10 | 8 | `.env.example`, `.gitignore`, `AGENTS.md` permissions, and green full-history secret scan in [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986). No provider/application spending cap is enforced. |
+| One command per check | 10 | 9 | Root-level README commands match the `gates` workflow and passed on fresh GitHub Actions checkout in [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986). |
+| CI that blocks a merge | 20 | 11 | CI runs on every PR and [run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) went red on a deliberate contract defect; [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) passed after the fix. Branch protection is absent, so the red check was not required and did not block merge. |
 | Endpoint contract | 25 | 21 | `docs/contract/submissions.md` defines caller/ownership, request and response, RFC 9457 errors, idempotency, and persistence behavior. Add the freeze SHA and product-owner FAQ/no-answer record to `PA2.md`. |
-| Contract tests that bite | 15 | 8 | `backend/internal/api/api_test.go` exercises success, errors, ownership/enrollment, replay, and persistence; [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736) logs 46 named contract subtests. A deliberate contract break with red CI and a later green fix is still missing. |
+| Contract tests that bite | 15 | 13 | `backend/internal/api/api_test.go` logs 46 contract subtests in [green run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986). The code-only enrollment break at `3d030a5` made the contract cases fail in [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861); restoring the guard in `90b68ef` made them green. Branch protection is not established, so this does not claim merge blocking. |
 | AI-LOG.md | 5 | 5 | `AI-LOG.md` identifies the tool and work, records concrete changes, and includes rejected choices and verification evidence. Keep the final CI run reference current. |
-| **Total** | **100** | **75** | **Provisional only. Re-score after completing the listed evidence and team review.** |
+| **Total** | **100** | **80** | **Provisional only. Re-score after completing the listed evidence and team review.** |
 
 ## What we did not manage yet
 
-The connected GitHub account cannot make the private repository public or configure branch protection. The repository's existing history contains a personal email address, so the owner should decide how to handle that history before publication. The spending cap, blocked deliberate-break PR, final `pa2` tag/run, and final public-repository links are not complete. This is not the final score or ZIP filename total.
+The connected GitHub account cannot make the private repository public or configure branch protection. The repository's existing history contains a personal email address, so the owner should decide how to handle that history before publication. The spending cap, proof that the deliberate-break PR was blocked, final `pa2` tag/run, and final public-repository links are not complete. This is not the final score or ZIP filename total.
 

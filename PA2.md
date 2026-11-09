@@ -14,7 +14,8 @@
 ## Current implementation evidence
 
 - Quality-gate PR: [#6](https://github.com/longtoZ/AWAD-LeeTKOB/pull/6)
-- Latest green CI run: [run 42660477736](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42660477736) (`gates`, `secret-history`, `e2e`) on commit `3c95afc`. The Go log shows 5 named unit tests and 46 contract subtests. Update this link after any later evidence change.
+- Latest code-verification run: [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) (`gates`, `secret-history`, `e2e`) on fix commit `90b68ef`. The Go log shows 5 named unit tests and 46 contract subtests.
+- Deliberate contract break: code-only commit `3d030a5` temporarily bypassed the enrollment guard; [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) failed the unenrolled and missing-lab contract cases. Fix commit `90b68ef` restored the guard and passed in run 42661351986. No tests or contract text changed.
 - The workflow runs the Go format check, `go vet`, PostgreSQL-backed API tests, frontend lint/format/type/build, full-history secret scan, `npm audit`, and a Playwright shell check.
 - `AI-LOG.md` records the assistant's work and setup incidents.
 
@@ -22,7 +23,7 @@
 
 - **Public repository:** GitHub currently reports the repository as private. The connected account has push access but not repository-admin access. Before changing visibility, the owner should review the existing commit history because it contains a personal email address.
 - **Protected `main`:** required checks, no-bypass policy, and direct-push rejection have not been verified. The connected account cannot change repository settings.
-- **Blocked red PR and green fix:** no deliberate contract-breaking commit has yet been shown to turn a required check red and block merge. Preserve the red run and later fix commit/green run when the owner can enable protection.
+- **Merge block:** the red and green runs are preserved, but the red check was not required and branch protection is unverified. The owner must enable protection and confirm the rule blocks merge during a red run.
 - **Submission contract evidence:** add the frozen contract SHA, test checklist, and the product-owner FAQ link or the team's explicitly labeled no-answer assumption.
 - **Final release evidence:** create and push the `pa2` tag after the assessed commit; link its green CI run here.
 - **Hand-in:** add the final `SELF_ASSESSMENT_REPORT.md`, package the repository including `.git` with team IDs in ascending order, and submit it from a member's student account by the Classroom deadline.
