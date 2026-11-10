@@ -1,46 +1,35 @@
 # PA#2 — Harness and quality gate evidence
 
-**Status: draft; not ready to submit.** This page records evidence that exists and names the remaining acceptance items. Do not treat the pending entries as completed.
+This page identifies the repository state and the evidence for the seven rubric criteria. The assessed revision is the `pa2` tag; use the tag, not a later `main` commit, when reproducing the checks.
 
-## Project and sources
+## Sources and scope
 
-- Repository: [AWAD-LeeTKOB](https://github.com/longtoZ/AWAD-LeeTKOB)
-- [PA2 plan](docs/PA2-PLAN.md)
-- [Submission endpoint contract](docs/contract/submissions.md)
-- [Quality-gate verification record](docs/PA2-QUALITY-GATE-VERIFICATION.md)
-- [PA#2 assignment and rubric](https://classroom.google.com/c/ODg2MTU1OTQ4NDc0/a/ODkzNzE1NjU1NDc5)
-- [LeeTKOB project brief](https://drive.google.com/file/d/1VK58AnV3_LWNWVX6jKxj1baPMDIA8QFm/view)
+- [Classroom PA#2 post](https://classroom.google.com/c/ODg2MTU1OTQ4NDc0/a/ODkzNzE1NjU1NDc5/details), [attached rubric](https://drive.google.com/file/d/1wWH6xtNdzngJdGl7t4Qxe6VBarwl8lH9/view), and [LeeTKOB brief](https://drive.google.com/file/d/1VK58AnV3_LWNWVX6jKxj1baPMDIA8QFm/view) were checked on 10 November 2026. The post and rubric specify the 11 November, 22:00 Vietnam-time deadline.
+- This checkpoint covers the harness, CI, and one endpoint contract with tests. The judging sandbox and model review are later checkpoints in the brief; they are not claimed as implemented here.
+- Public repository: [AWAD-LeeTKOB](https://github.com/longtoZ/AWAD-LeeTKOB). GitHub reported `visibility: public` on 10 November 2026.
 
-## Current implementation evidence
+## Rules, secrets, and reproducible checks
 
-- Quality-gate PR: [#6](https://github.com/longtoZ/AWAD-LeeTKOB/pull/6)
-- Latest code-verification run: [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) (`gates`, `secret-history`, `e2e`) on fix commit `90b68ef`. The Go log shows 5 named unit tests and 46 contract subtests.
-- Deliberate contract break: code-only commit `3d030a5` temporarily bypassed the enrollment guard; [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) failed the unenrolled and missing-lab contract cases. Fix commit `90b68ef` restored the guard and passed in run 42661351986. No tests or contract text changed.
-- The workflow runs the Go format check, `go vet`, PostgreSQL-backed API tests, frontend lint/format/type/build, full-history secret scan, `npm audit`, and a Playwright shell check.
-- `AI-LOG.md` records the assistant's work and setup incidents.
-- Branch ruleset screenshots show the branch protection for `main` with required checks and no bypass: [branch-ruleset-1](img/evidence/branch-ruleset-1.png), [branch-ruleset-2](img/evidence/branch-ruleset-2.png), [branch-ruleset-3](img/evidence/branch-ruleset-3.png)
-- [Direct push rejection](img/evidence/main-branch-block.png): GitHub rejected a push to `main`, citing the pull request requirement and three required checks.
+- [`AGENTS.md`](AGENTS.md) names the stack, commands, conventions, product-specific never rules, and allowed / ask-first / never permissions. Its port and example-environment rules trace to the recorded setup incidents in [`AI-LOG.md`](AI-LOG.md).
+- [`.env.example`](.env.example) lists names without values; [`.gitignore`](.gitignore) excludes local `.env` files. The `secret-history` job runs Gitleaks with full Git history and `npm audit`; it passed in the [latest main run](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42851830119). A passing scan is evidence of the scan, not proof that every possible secret is absent.
+- The [README PA2 checks](README.md#pa2-checks) give the same frontend check, Go format, `go vet`, and PostgreSQL-backed test commands that the [workflow](.github/workflows/gates.yml) runs. On `main` at `0c5de65`, [run 42851830119](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42851830119) passed `gates`, `secret-history`, and `e2e` on a clean runner. CI sets `TEST_DATABASE_URL` so the contract suite runs instead of skipping.
+- **Spending cap:** The [README](README.md#spending-cap-status) currently says the proposed US$10 model budget is not enforced. No model key is used in the implementation yet. Do not count this as the rubric's cap until the project owner provides evidence for a cap on the key's project and the README is updated.
 
-## Submission contract evidence
+## Protected merge and contract break
 
-- [Submission contract](docs/contract/submissions.md): last changed in commit [`abf949c`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/abf949cd718088de321cd188295878ebb7b763ae). The plan records team review and freeze as confirmed by Tran Anh Khoa; the exact freeze commit still needs his confirmation.
-- [Contract test checklist](docs/contract/submissions-test-scenarios.md): review scenarios and remaining fault-injection coverage. The checklist itself is not evidence that every scenario was tested; see the [H1/H2 verification](docs/PA2-H1-H2-VERIFICATION.md) and CI run above.
-- **Product-owner FAQ or no-answer assumption — pending Khoa:** add the actual FAQ entry, or document the question, whether an answer was received, and the team's specific assumption. No answer or assumption is established by the available records.
+- The active [`main` ruleset](https://github.com/longtoZ/AWAD-LeeTKOB/rules/26947349) requires a pull request and the `gates`, `secret-history`, and `e2e` checks, with no bypass actor in the ruleset. [Settings screenshots](img/evidence/branch-ruleset-1.png) and [direct-push rejection](img/evidence/main-branch-block.png) provide additional evidence.
+- [PR #9](https://github.com/longtoZ/AWAD-LeeTKOB/pull/9) added database row-count assertions to refusals and replays before the deliberate break. Its [green run](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42840683728) passed.
+- [PR #10](https://github.com/longtoZ/AWAD-LeeTKOB/pull/10) introduced a **code-only** replay defect in [`22030bc`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/22030bc8253aa160328b84011ab14a02eba8157a): a duplicate submission and job were written while the replay still returned the stored `201`. The required `gates` job [failed](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42841435023) on `creation_and_replay` and `key_retained_after_23_hours`; [GitHub showed merging blocked](img/evidence/pr-blocked-by-red-gates.png).
+- The [fix commit `473475d`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/473475d5e601a314ef8b4345096b97c264497778) reverted only the defective code. Tests and contract were unchanged; the [PR checks turned green](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42842548890) before merge.
 
-## Merge block and deliberate contract break (H3 — Pham Bao Huy)
+## Endpoint contract and tests
 
-Done on protected `main` (required checks `gates`, `secret-history`, `e2e`), in two PRs:
+- [`docs/contract/submissions.md`](docs/contract/submissions.md) specifies `POST /labs/{labId}/submissions`: enrolled-student ownership, request and response fields, all problem-detail error types and statuses, check order, 24-hour key retention, replay/conflict behavior, and atomic submission/job persistence. Commit [`abf949c`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/abf949cd718088de321cd188295878ebb7b763ae) introduced this contract. Its blob SHA is `dd91f4dec2967c5aedd49a41d202f11bde212e13`, unchanged at `0c5de65`.
+- [`backend/internal/api/api_test.go`](backend/internal/api/api_test.go) tests the handler over HTTP with PostgreSQL. It checks success, all listed error types, other-student enrollment refusal, replay and conflict, and database row counts after refusals and retries. The [latest main CI run](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42851830119) executes this suite. [Test scenarios](docs/contract/submissions-test-scenarios.md) are a review checklist, not a claim that every scenario is automated; uncertain-commit fault injection remains incomplete.
+- The brief directs teams to cite a product-owner FAQ entry **when relying on one**. No FAQ answer is cited by this contract. Its endpoint choices are team-defined behavior where the brief is silent; the available record does not establish that the team asked the owners a question or received an answer.
 
-1. **Tests first — [PR #9](https://github.com/longtoZ/AWAD-LeeTKOB/pull/9)** (commit [`2b68ded`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/2b68ded), [green run 42840683728](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42840683728)). Tests only, +30 lines, no assertion removed. Every refusal and both replays in `TestSubmissionContract` now compare the submission, job and idempotency-key row counts before and after the request (contract §4: a refusal "creates nothing"; a replay must "not create another submission or job"). Before this PR, the replay test counted jobs for the first submission ID only.
-2. **Deliberate break — [PR #10](https://github.com/longtoZ/AWAD-LeeTKOB/pull/10)**, code-only commit [`22030bc`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/22030bc): on a same-key, same-body retry the handler inserted a second submission and judging job, then still replayed the stored `201` body with `Idempotent-Replayed: true`. The response was correct; only the database showed the violation.
-   - **Red, and the merge was blocked:** [run 42841435023](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42841435023), where the required `gates` check failed on `TestSubmissionContract/creation_and_replay` and `/key_retained_after_23_hours` (`submissions:2 → 3, jobs:2 → 3`). [Screenshot: "Merging is blocked due to failing merge requirements"](img/evidence/pr-blocked-by-red-gates.png).
-   - **The commit that turned it green:** [`473475d`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/473475d), a pure revert with no change to tests or contract; [green run 42842548890](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42842548890).
-   - **The suite before PR #9 would have missed this break.** Run locally (postgres:17, Go 1.26), the `main` test file from before `2b68ded` passed against `22030bc`. That is why the tests went in first.
+## Release and hand-in
 
-The earlier enrollment-guard break (`3d030a5`, [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861)) also shows the tests failing, but it ran before `main` was protected, so it does not prove that a red check blocked a merge.
-
-## Required evidence still pending
-- **Submission contract evidence:** Khoa to confirm the exact freeze commit and supply the product-owner FAQ link or the team's specific documented no-answer assumption.
-- **Final release evidence:** create and push the `pa2` tag after the assessed commit; link its green CI run here.
-- **Hand-in:** add the final `SELF_ASSESSMENT_REPORT.md`, package the repository including `.git` with team IDs in ascending order, and submit it from a member's student account by the Classroom deadline.
-
+- The final self-score and its evidence are in [`SELF_ASSESSMENT_REPORT.md`](SELF_ASSESSMENT_REPORT.md). Historical AI work and this preparation task are recorded in [`AI-LOG.md`](AI-LOG.md).
+- **Tag CI:** After the final assessed commit is tagged and pushed as `pa2`, use the [tag-filtered workflow runs](https://github.com/longtoZ/AWAD-LeeTKOB/actions/workflows/gates.yml?query=branch%3Apa2) to find its `gates`, `secret-history`, and `e2e` results. The ZIP must contain that tagged repository, including `.git`.
+- The team will submit one ZIP from a member's student Google account. ZIP preparation does not itself submit coursework.
