@@ -23,19 +23,21 @@ Tool used: Codex, for planning and initial project setup.
 - **Changed:** The plan uses React with TypeScript and a separate Go backend.
 - **Evidence:** `docs/PA2-PLAN.md`, step 1; repository setup commit `aa16e18`.
 
-## 4. Submission setup
+## 2026-11-08 — 4. Submission setup: login, enrollment and `POST /labs/{labId}/submissions` (H2, commit `2c7e6ef`, PR #3)
+Tool: Codex
+Asked for: implement login, enrollment and the submission endpoint with a simple PostgreSQL queue, following `docs/contract/submissions.md`.
+Kept: SCS sessions stored in PostgreSQL, versioned migrations, and the submission and its pending job inserted in one transaction; PostgreSQL contract checks run in an isolated temporary schema. The second migration (`00002_source_bytes.sql`) stores source as bytes, because PostgreSQL `text` cannot hold a NUL byte while the contract allows one in `source`; a contract check verifies the bytes are preserved.
+Changed: <fill in: what you rewrote in the generated handler, migrations or tests, and why>
+Rejected: <fill in: what the assistant proposed that you threw away, and why>
+By hand: <fill in: the parts you wrote yourself>
 
-- **Task:** Implement login, enrollment, and the submission endpoint with a simple PostgreSQL queue.
-- **Changed:** Codex added SCS-backed sessions, versioned migrations, and an atomic submission/job insert. PostgreSQL contract checks run in an isolated temporary schema.
-- **Changed:** PostgreSQL `text` cannot store a NUL byte, although the contract allows it in a source string. A second migration stores source as bytes; a contract check verifies preservation.
-- **Remaining:** Complete the team's contract review, cover the remaining contract scenarios, and run the checks in required CI.
-
-## 5. H1/H2 contract follow-up
-
-- **Task:** Recheck H1/H2 against the frozen submission contract after pulling `main` at `9f25fab`.
-- **Problem:** The handler accepted a request with two `Origin` header values when the first matched the configured origin. Several contract scenarios lacked exact error-type or persistence assertions. The original pre-implementation red output was not retained.
-- **Changed:** Codex added a failing duplicate-Origin test, changed validation to require exactly one matching value, and expanded PostgreSQL HTTP tests for contract errors, ordering, ownership, idempotency, rollback, source boundaries, and expired sessions.
-- **Evidence:** `docs/PA2-H1-H2-VERIFICATION.md` records the observed local red and green runs. This is follow-up test evidence, not the original test-first run or the required CI break PR.
+## 2026-11-09 — 5. H1/H2 contract follow-up (commit `2b18a48`, PR #5)
+Tool: Codex
+Asked for: recheck H1/H2 against the frozen submission contract at `9f25fab`, and add the missing contract tests.
+Kept: the duplicate-Origin finding — the handler accepted two `Origin` values when the first matched, although contract §4 says "exactly the configured application origin". The new `TestOriginMustMatchConfiguredValue` failed first (`api_test.go:67: multiple Origin values accepted`), then `validOrigin` was changed to require exactly one matching value. Also kept the expanded PostgreSQL HTTP tests: every error type's status, type and title, check order, ownership/enrollment, idempotency, rollback, source boundaries and expired sessions. Red and green runs: `docs/PA2-H1-H2-VERIFICATION.md`. The tests and `server.go` changed in the same commit; the tests got stricter (no assertion weakened) and the contract text did not change, because the code was the part that disagreed with it. The original red run from before the endpoint was implemented was never kept; this follow-up does not replace it.
+Changed: <fill in: what you rewrote in the generated tests or the Origin fix, and why>
+Rejected: <fill in: what the assistant proposed that you threw away, and why>
+By hand: <fill in: the parts you wrote yourself>
 
 ## 6. PA2 checks and CI
 
@@ -52,4 +54,4 @@ Asked for: check my PA#2 tasks (H1–H4) against the rubric and finish H3: a red
 Kept: the finding that every refusal test checked only the problem response, and that the replay test counted jobs for the first submission ID only, so a handler that wrote a second submission and job on a retry and still replayed the stored `201` stayed green. Kept the before/after row-count checks (PR #9, tests only, +30 lines, nothing removed) and the code-only replay break `22030bc` (PR #10). Before opening PR #10 the assistant checked the claim both ways in throwaway postgres:17 / Go 1.26 containers: the old test file passed against the break, the new one failed on `creation_and_replay` and `key_retained_after_23_hours`.
 Changed: nothing in the code or tests. I read the diff of PR #9 (30 added lines, no assertion removed) and of `22030bc` before pushing, and checked that PR #10 touched only `submission.go`.
 Rejected: repeating the enrollment-guard break from the team handoff (PR #7). That break was already shown red in run 42661114861, so a second one would prove nothing new; the replay break showed a hole the old tests could not catch.
-By hand: opened and merged PR #9 and PR #10; checked that the required `gates` check blocked the merge and took the screenshot; chose which break to make;
+By hand: opened and merged PR #9 and PR #10; checked that the required `gates` check blocked the merge and took the screenshot; chose which break to make; <fill in: anything else you did yourself, or delete this placeholder>

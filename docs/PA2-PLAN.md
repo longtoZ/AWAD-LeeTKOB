@@ -248,11 +248,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
 
 **Completion note (9 Nov 2026):** K1 and K2 are marked complete per Tran Anh Khoa's confirmation. Add the contract freeze SHA/test checklist and the product-owner FAQ answer or documented no-answer assumption to `PA2.md` before hand-in.
-- [ ] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract.
+- [x] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract. Closed 10 Nov with one evidence gap, stated below and in `SELF_ASSESSMENT_REPORT.md`.
   - [x] Cover success, every contract error type, enrolled/unenrolled students, non-student roles, replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior in Go HTTP tests. See `backend/internal/api/api_test.go`.
   - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
   - [x] Save the observed failing test for the duplicate-Origin defect before its fix, then the passing PostgreSQL suite. See `docs/PA2-H1-H2-VERIFICATION.md`.
-  - [ ] Supply the **original** expected failing output from before endpoint implementation, if it exists. The endpoint was implemented before this follow-up and that run was not preserved; do not claim the new red run is the original one.
+  - **Not available — will not be supplied:** the **original** failing output from before the endpoint was implemented. The endpoint (`2c7e6ef`) was written before its tests were run red, and no output from that time was kept. The red run we have is the later duplicate-Origin one (`docs/PA2-H1-H2-VERIFICATION.md`); it is follow-up evidence and is not presented as the original. Listed under "What we did not manage" in `SELF_ASSESSMENT_REPORT.md`.
 - [x] **H2 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H1's red tests and the existing Go module. The implementation is verified; the original test-first sequence is still an H1 evidence gap.
   - [x] Implement the real `POST /labs/{labId}/submissions` handler.
   - [x] Verify identity and enrollment come from server-side state; tests check problem response structure and statuses.
