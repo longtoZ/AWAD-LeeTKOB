@@ -81,3 +81,8 @@ Verified: frontend install/check, Go format/vet/PostgreSQL tests, dependency aud
 Tool: Codex (this task), comparing the report against the supplied PA#2 rubric.
 Changed: revised the draft total from 98/100 to 100/100. Criterion 6's full-credit band requires contract-error/ownership/idempotency coverage in required CI and a deliberate red/green break; uncertain-commit fault injection is not listed. Criterion 7's five-point description requires named tools/tasks and specific Changed/Rejected entries, which the log contains. Kept the absent fault-injection test and missing historical H1/H2 evidence disclosed as limits, without using them to deduct points the rubric does not specify.
 Rejected: treating the rubric's ±10 self-assessment tolerance as permission to inflate a score; the updated score is based on the written full-credit descriptions. If the instructor awards 98, the 2-point difference is within the rubric's no-adjustment range.
+
+## 2026-11-11 — Clarify browser test setup
+Tool: Codex, following read-only review of the PA#2 evidence changes.
+Changed: separated the Playwright test command from browser installation in README and clarified that Windows/macOS and Linux CI need different browser setup flags, while both run the same `npm run e2e --prefix frontend` check.
+Kept: the existing local test result and the CI workflow command; no application or test files changed.

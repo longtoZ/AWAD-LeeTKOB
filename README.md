@@ -80,9 +80,9 @@ Use Node.js 22.13.1 and Go 1.26 or newer. From the repository root, run the same
 | Go vet | `go -C backend vet ./...` |
 | Backend unit and PostgreSQL contract tests | `go -C backend test ./... -count=1 -v` |
 | Dependency audit | `npm audit --prefix frontend` |
-| Browser smoke test | `npm ci --prefix frontend && npx --prefix frontend playwright install chromium && npm run e2e --prefix frontend` |
+| Browser smoke test | `npm run e2e --prefix frontend` |
 
-The database-backed Go tests require `TEST_DATABASE_URL`; CI starts PostgreSQL and sets it so the integration suite cannot silently skip. The browser smoke test checks that the app shell renders. It does not replace API contract tests.
+The database-backed Go tests require `TEST_DATABASE_URL`; CI starts PostgreSQL and sets it so the integration suite cannot silently skip. Before the first browser smoke test, install Chromium: use `npx --prefix frontend playwright install chromium` on Windows/macOS; Linux CI uses `npx --prefix frontend playwright install --with-deps chromium` to install system packages too. The test command itself is the same locally and in CI. The browser smoke test checks that the app shell renders; it does not replace API contract tests.
 
 CI runs the `gates`, `secret-history`, and `e2e` jobs on pull requests, pushes to `main`, and the `pa2` tag. Configure `gates`, `secret-history`, and `e2e` as required checks in GitHub branch protection. A passing workflow run alone does not configure branch protection.
 
