@@ -243,11 +243,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Freeze the reviewed contract against the class brief and any available product-owner FAQ answer.
   - [x] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
   - [x] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
-- [x] **K2 — Tran Anh Khoa** · Due: 8 Nov; recheck 10 Nov · Prerequisite: K1's list of unanswered decisions.
-  - [x] Ask the product owners the exact behavior questions left open by the brief.
-  - [x] Link the FAQ answer in the contract, or record that no answer arrived and state the team's narrow assumption; do not present it as an official requirement.
+- [ ] **K2 — Tran Anh Khoa** · Due: 8 Nov; rechecked 10 Nov · Prerequisite: K1's list of unanswered decisions.
+  - [ ] Ask the product owners only if a behavior question remains unresolved. The available record does not establish that a question was sent.
+  - [ ] Cite an FAQ answer if one is used. No answer is cited in this contract; its choices where the brief is silent are team decisions, not official requirements.
 
-**Completion note (9 Nov 2026):** K1 and K2 are marked complete per Tran Anh Khoa's confirmation. Add the contract freeze SHA/test checklist and the product-owner FAQ answer or documented no-answer assumption to `PA2.md` before hand-in.
+**Evidence correction (10 Nov 2026):** The earlier K2 completion mark was unsupported. K1's contract blob SHA and the test checklist are recorded in `PA2.md`; no FAQ answer is claimed.
 - [x] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract. Closed 10 Nov with one evidence gap, stated below and in `SELF_ASSESSMENT_REPORT.md`.
   - [x] Cover success, every contract error type, enrolled/unenrolled students, non-student roles, replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior in Go HTTP tests. See `backend/internal/api/api_test.go`.
   - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
@@ -260,7 +260,7 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
 
 ### Local checks, CI, and branch protection
 
-- [ ] **L1 — To Thanh Long** · Due: 9 Nov · Prerequisites: Go/TypeScript stack and H1's test command.
+- [x] **L1 — To Thanh Long** · Due: 9 Nov · Prerequisites: Go/TypeScript stack and H1's test command.
   - [x] Document one command each for lint, format check, type check where applicable, and tests in `README.md`.
   - [x] Pin Node 22.13.1 for frontend/browser CI; use the same documented commands in the workflow.
   - [x] Verify all commands work from a fresh clone; the CI gate contains real lint, build, Go vet, contract, audit, and browser checks with no pass-through. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
@@ -270,14 +270,14 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `90b68ef` (run 42661351986).
   - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
-- [ ] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
+- [x] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
   - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.
   - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
   - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986).
   - [x] Demonstrate that a code-only enrollment defect turns the contract suite red and passes after the fix; see [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) and [green run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986).
   - [x] Configure the red check as required and prove it blocks merge (L4/H3). See H3 and `PA2.md`.
-- [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
-  - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass. Screenshots show the PR and three-check requirements, but do not show the bypass settings or enforcement status.
+- [x] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
+  - [x] Require pull requests and the three PA2 checks on `main`; the [active ruleset](https://github.com/longtoZ/AWAD-LeeTKOB/rules/26947349) has no bypass actor. Its required `gates` check blocked [PR #10](https://github.com/longtoZ/AWAD-LeeTKOB/pull/10) while red.
   - [x] Verify a direct push to `main` is rejected. See [rejected push](../img/evidence/main-branch-block.png).
   - [x] Save a settings link or screenshot and evidence of the rejected push. See [target](../img/evidence/branch-ruleset-1.png), [PR requirement](../img/evidence/branch-ruleset-2.png), [required checks](../img/evidence/branch-ruleset-3.png), and [rejected push](../img/evidence/main-branch-block.png).
 - [x] **H3 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: L3 and L4. Done 10 Nov on protected `main`: tests-first [PR #9](https://github.com/longtoZ/AWAD-LeeTKOB/pull/9), then break [PR #10](https://github.com/longtoZ/AWAD-LeeTKOB/pull/10), with red blocked [run 42841435023](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42841435023) and green fix `473475d` in [run 42842548890](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42842548890).
@@ -285,11 +285,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Confirm `gates` turns red on the unenrolled/missing-lab cases in [run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861).
   - [x] Confirm the required check blocks merge: second break `22030bc` on PR #10 failed the required `gates` check and GitHub blocked the merge ([screenshot](../img/evidence/pr-blocked-by-red-gates.png)); revert `473475d` turned it green.
   - [x] Restore the enrollment guard in `90b68ef`; [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) is green with contract and tests unchanged.
-- [ ] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green.
+- [x] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green. The second-reader record was completed during final evidence preparation.
   - [x] Capture links to PR #6, red run 42661114861, fix commit `90b68ef`, and green run 42661351986 in `PA2.md`.
-  - [ ] Verify that branch protection prevented merging while the check was red.
-  - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
-  - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
+  - [x] Verify that branch protection prevented merging while the check was red; see [PR #10 screenshot](../img/evidence/pr-blocked-by-red-gates.png).
+  - [x] A fresh second reader identified the duplicate write at `backend/internal/api/submission.go:230–235` in `22030bc` against contract §4. It reported no other supported issue and explicitly did not claim to have run CI.
+  - [x] The concise second-reader result and separate CI links are in `PA2.md`.
 - [x] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
   - [x] Run the README commands from a fresh GitHub Actions checkout at `90b68ef`; all listed CI checks passed.
   - [x] Record the commit SHA, test count, and command results. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
@@ -303,7 +303,7 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [ ] Complete `SELF_ASSESSMENT_REPORT.md` with one evidence-backed row per rubric criterion, an honest “What we did not manage” section, and a total matching the ZIP filename.
   - [ ] Prepare a ZIP containing `.git` and required files; use team IDs in ascending order.
 
-**Evidence draft note (10 Nov 2026):** Root `PA2.md` and `SELF_ASSESSMENT_REPORT.md` now contain the evidence available and mark unresolved items. They are not submission-ready: final settings/break/tag evidence, the team's student IDs, and team confirmation of the proposed score are still needed.
+**Evidence correction (10 Nov 2026):** The old 80-point draft and private-repository status have been superseded in root `PA2.md` and `SELF_ASSESSMENT_REPORT.md`. The team IDs were confirmed by Tran Anh Khoa. The cap remains unverified; tagging and packaging follow the final assessed commit.
 - [ ] **K5 — Tran Anh Khoa** · Due: 11 Nov, before 22:00 · Prerequisites: K4 and an active member `<StudentID>@student.hcmus.edu.vn` Google account.
   - [ ] Tag the assessed public main commit `pa2` and push the tag.
   - [ ] Verify the tag's CI run is green and link it in `PA2.md`.
