@@ -50,6 +50,6 @@ Tool used: Codex, for planning and initial project setup.
 Tool: Claude Code (Claude Opus 5.5).
 Asked for: check my PA#2 tasks (H1–H4) against the rubric and finish H3: a red required check that blocks a merge, then the commit that turns it green.
 Kept: the finding that every refusal test checked only the problem response, and that the replay test counted jobs for the first submission ID only, so a handler that wrote a second submission and job on a retry and still replayed the stored `201` stayed green. Kept the before/after row-count checks (PR #9, tests only, +30 lines, nothing removed) and the code-only replay break `22030bc` (PR #10). Before opening PR #10 the assistant checked the claim both ways in throwaway postgres:17 / Go 1.26 containers: the old test file passed against the break, the new one failed on `creation_and_replay` and `key_retained_after_23_hours`.
-Changed: <fill in>
-Rejected: <fill in — e.g. why we did not repeat the enrollment-guard break from the team handoff, if that was your reason>
-By hand: opened and merged PR #9 and PR #10 on GitHub and took the blocked-merge screenshot (`img/evidence/pr-blocked-by-red-gates.png`); the assistant cannot change branch protection or press Merge. <fill in anything else you did yourself>
+Changed: nothing in the code or tests. I read the diff of PR #9 (30 added lines, no assertion removed) and of `22030bc` before pushing, and checked that PR #10 touched only `submission.go`.
+Rejected: repeating the enrollment-guard break from the team handoff (PR #7). That break was already shown red in run 42661114861, so a second one would prove nothing new; the replay break showed a hole the old tests could not catch.
+By hand: opened and merged PR #9 and PR #10; checked that the required `gates` check blocked the merge and took the screenshot; chose which break to make;
