@@ -21,3 +21,5 @@ Proposed total to review: **80 / 100**
 
 The project record says the connected GitHub account cannot make the private repository public. The repository's existing history contains a personal email address, so the owner should decide how to handle that history before publication. No-bypass settings, the spending cap, proof that a failing check blocked a PR, final `pa2` tag/run, and final public-repository links are not complete. This is not the final score or ZIP filename total.
 
+- **Contract tests were not written red-first.** The submission endpoint (`2c7e6ef`) was implemented before its tests were run failing, and no output from that time was kept. Our test-first evidence comes later: the duplicate-Origin red run in `docs/PA2-H1-H2-VERIFICATION.md`, and the tests-first PR #9 before the deliberate break in PR #10. We do not present either as the original run.
+
