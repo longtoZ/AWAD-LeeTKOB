@@ -18,13 +18,19 @@
 - Deliberate contract break: code-only commit `3d030a5` temporarily bypassed the enrollment guard; [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) failed the unenrolled and missing-lab contract cases. Fix commit `90b68ef` restored the guard and passed in run 42661351986. No tests or contract text changed.
 - The workflow runs the Go format check, `go vet`, PostgreSQL-backed API tests, frontend lint/format/type/build, full-history secret scan, `npm audit`, and a Playwright shell check.
 - `AI-LOG.md` records the assistant's work and setup incidents.
+- Branch ruleset screenshots show the branch protection for `main` with required checks and no bypass: [branch-ruleset-1](img/evidence/branch-ruleset-1.png), [branch-ruleset-2](img/evidence/branch-ruleset-2.png), [branch-ruleset-3](img/evidence/branch-ruleset-3.png)
+- [Direct push rejection](img/evidence/main-branch-block.png): GitHub rejected a push to `main`, citing the pull request requirement and three required checks.
+
+## Submission contract evidence
+
+- [Submission contract](docs/contract/submissions.md): last changed in commit [`abf949c`](https://github.com/longtoZ/AWAD-LeeTKOB/commit/abf949cd718088de321cd188295878ebb7b763ae). The plan records team review and freeze as confirmed by Tran Anh Khoa; the exact freeze commit still needs his confirmation.
+- [Contract test checklist](docs/contract/submissions-test-scenarios.md): review scenarios and remaining fault-injection coverage. The checklist itself is not evidence that every scenario was tested; see the [H1/H2 verification](docs/PA2-H1-H2-VERIFICATION.md) and CI run above.
+- **Product-owner FAQ or no-answer assumption — pending Khoa:** add the actual FAQ entry, or document the question, whether an answer was received, and the team's specific assumption. No answer or assumption is established by the available records.
 
 ## Required evidence still pending
 
-- **Public repository:** GitHub currently reports the repository as private. The connected account has push access but not repository-admin access. Before changing visibility, the owner should review the existing commit history because it contains a personal email address.
-- **Protected `main`:** required checks, no-bypass policy, and direct-push rejection have not been verified. The connected account cannot change repository settings.
-- **Merge block:** the red and green runs are preserved, but the red check was not required and branch protection is unverified. The owner must enable protection and confirm the rule blocks merge during a red run.
-- **Submission contract evidence:** add the frozen contract SHA, test checklist, and the product-owner FAQ link or the team's explicitly labeled no-answer assumption.
+- **Merge block — Huy:** placeholder for the PR and evidence showing a failing required check blocks merging, followed by the passing fix. The previous red check was not required.
+- **Submission contract evidence:** Khoa to confirm the exact freeze commit and supply the product-owner FAQ link or the team's specific documented no-answer assumption.
 - **Final release evidence:** create and push the `pa2` tag after the assessed commit; link its green CI run here.
 - **Hand-in:** add the final `SELF_ASSESSMENT_REPORT.md`, package the repository including `.git` with team IDs in ascending order, and submit it from a member's student account by the Classroom deadline.
 
