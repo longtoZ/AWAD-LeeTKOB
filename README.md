@@ -63,7 +63,7 @@ For a walkthrough with example requests, see [manual backend testing](docs/MANUA
 
 ## Model and cost
 
-Gemini 3.8 Flash is the planned evaluation candidate. The proposed project budget is US$10; it has **not yet been configured or verified as an enforced spending cap**. No model integration is implemented yet.
+Gemini 3.8 Flash is the planned evaluation candidate. Google AI Studio shows a **₫100,000 monthly project spend cap** for `AWAD-LeeTKOB`; evidence is saved in [`img/evidence/gemini-monthly-cap.png`](img/evidence/gemini-monthly-cap.png), with the project identity and paid-tier setup in [project details](img/evidence/gemini-project-details.png) and [billing setup](img/evidence/gemini-paid-tier.png). No model integration is implemented yet.
 
 At Gemini 3.8 Flash introductory standard rates of US$0.75 per million input tokens and US$3.75 per million output tokens, 80 calls with 2,000 input and 500 output tokens each would cost approximately **US$0.27 per lab**. Output pricing includes thinking tokens. This is an estimate, not a measured cost or spending limit; retries, usage, other charges, and pricing changes can change it. The introductory rates apply through 31 December 2026; check [current pricing and data terms](https://ai.google.dev/gemini-api/docs/pricing) before use.
 
@@ -90,4 +90,4 @@ CI runs the `gates`, `secret-history`, and `e2e` jobs on pull requests, pushes t
 
 ## Spending cap status
 
-The model integration is not implemented. The proposed US$10 budget is not an enforced provider limit. Before connecting a model, configure a provider-side cap or an application-side hard limit, verify it, and update this section with the measured cost boundary. Do not treat the request limits or illustrative US$0.27 estimate above as a cap.
+Google AI Studio currently displays the `AWAD-LeeTKOB` project's monthly spend cap as **₫100,000**. The cap is project-level and the Spend page was set to **All API Keys**; it is not an application-side hard limit. Google documents the project cap as experimental and warns that billing processing can lag by about 10 minutes, so a small overage is possible. Keep this limitation in mind before enabling model calls. See the [saved cap screenshot](img/evidence/gemini-monthly-cap.png) and [Google's billing documentation](https://ai.google.dev/gemini-api/docs/billing#project-spend-caps). The model integration is not implemented.
