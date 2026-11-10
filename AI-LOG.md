@@ -59,7 +59,7 @@ By hand: opened and merged PR #9 and PR #10; checked that the required `gates` c
 ## 2026-11-10 — PA#2 evidence and hand-in preparation
 Tool: Codex (this task).
 Asked for: resolve the remaining PA#2 gaps against the live rubric and prepare a submission ZIP.
-Kept: the existing contract, tests, and red/green PR evidence. No product implementation was generated in this task.
+Kept: the existing contract, tests, and red/green PR evidence. A fresh second reader identified the duplicate write at `submission.go:230–235` in the deliberate-break commit against contract §4; it did not run CI. No product implementation was generated in this task.
 Changed: corrected stale status in `PA2.md` and the self-assessment, replaced unfilled historical log prompts with explicit "not recorded" statements, and aligned the report with confirmed team IDs and live evidence.
 Rejected: treating the draft 80/100, an unverified spending cap, or an uncited product-owner answer as established facts.
 By hand: Tran Anh Khoa supplied the team's three student IDs. Further team review of the final score and archive is not recorded here.

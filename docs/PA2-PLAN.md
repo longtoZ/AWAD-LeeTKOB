@@ -285,11 +285,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Confirm `gates` turns red on the unenrolled/missing-lab cases in [run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861).
   - [x] Confirm the required check blocks merge: second break `22030bc` on PR #10 failed the required `gates` check and GitHub blocked the merge ([screenshot](../img/evidence/pr-blocked-by-red-gates.png)); revert `473475d` turned it green.
   - [x] Restore the enrollment guard in `90b68ef`; [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) is green with contract and tests unchanged.
-- [ ] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green.
+- [x] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green. The second-reader record was completed during final evidence preparation.
   - [x] Capture links to PR #6, red run 42661114861, fix commit `90b68ef`, and green run 42661351986 in `PA2.md`.
   - [x] Verify that branch protection prevented merging while the check was red; see [PR #10 screenshot](../img/evidence/pr-blocked-by-red-gates.png).
-  - [ ] In a fresh session, ask a second assistant to review the break PR diff against the contract. Record whether it caught the violation, the line it quoted, and anything it invented.
-  - [ ] Put the evidence links and concise second-reader result in `PA2.md`.
+  - [x] A fresh second reader identified the duplicate write at `backend/internal/api/submission.go:230–235` in `22030bc` against contract §4. It reported no other supported issue and explicitly did not claim to have run CI.
+  - [x] The concise second-reader result and separate CI links are in `PA2.md`.
 - [x] **H4 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: H2 and L3 green.
   - [x] Run the README commands from a fresh GitHub Actions checkout at `90b68ef`; all listed CI checks passed.
   - [x] Record the commit SHA, test count, and command results. See `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
