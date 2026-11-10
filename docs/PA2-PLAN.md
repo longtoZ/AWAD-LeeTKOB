@@ -277,9 +277,9 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Demonstrate that a code-only enrollment defect turns the contract suite red and passes after the fix; see [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) and [green run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986).
   - [ ] Configure the red check as required and prove it blocks merge (L4/H3).
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
-  - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass.
-  - [ ] Verify a direct push to `main` is rejected.
-  - [ ] Save a settings link or screenshot and evidence of the rejected push.
+  - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass. Screenshots show the PR and three-check requirements, but do not show the bypass settings or enforcement status.
+  - [x] Verify a direct push to `main` is rejected. See [rejected push](../img/evidence/main-branch-block.png).
+  - [x] Save a settings link or screenshot and evidence of the rejected push. See [target](../img/evidence/branch-ruleset-1.png), [PR requirement](../img/evidence/branch-ruleset-2.png), [required checks](../img/evidence/branch-ruleset-3.png), and [rejected push](../img/evidence/main-branch-block.png).
 - [ ] **H3 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: L3 and L4.
   - [x] Make a code-only enrollment-guard violation on PR #6 without changing the contract or tests; commit `3d030a5`.
   - [x] Confirm `gates` turns red on the unenrolled/missing-lab cases in [run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861).

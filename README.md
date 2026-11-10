@@ -65,7 +65,9 @@ For a walkthrough with example requests, see [manual backend testing](docs/MANUA
 
 Gemini 3.8 Flash is the planned evaluation candidate. The proposed project budget is US$10; it has **not yet been configured or verified as an enforced spending cap**. No model integration is implemented yet.
 
-An illustrative estimate for 80 model calls, each using 2,000 input and 500 output tokens, is **US$0.10 per lab** at published standard rates of $0.25 per million input tokens and $1.50 per million output tokens. Output includes any billed thinking tokens. This is an assumption, not a measured cost or an upper bound: constraints, retries, token usage, and pricing can change the total. Measure actual use on the dev set and check [provider pricing and data terms](https://ai.google.dev/gemini-api/docs/pricing) before sending student code.
+At Gemini 3.8 Flash introductory standard rates of US$0.75 per million input tokens and US$3.75 per million output tokens, 80 calls with 2,000 input and 500 output tokens each would cost approximately **US$0.27 per lab**. Output pricing includes thinking tokens. This is an estimate, not a measured cost or spending limit; retries, usage, other charges, and pricing changes can change it. The introductory rates apply through 31 December 2026; check [current pricing and data terms](https://ai.google.dev/gemini-api/docs/pricing) before use.
+
+The team reports AI Studio limits of 1,000 requests per minute and 10,000 requests per day for its account. These limit request frequency, not total spending; active limits can change.
 
 ## PA2 checks
 
@@ -88,4 +90,4 @@ CI runs the `gates`, `secret-history`, and `e2e` jobs on pull requests, pushes t
 
 ## Spending cap status
 
-The model integration is not implemented. The proposed US$10 budget is not an enforced provider limit. Before connecting a model, configure a provider-side cap or an application-side hard limit, verify it, and update this section with the measured cost boundary. Do not treat the illustrative US$0.10 estimate above as a cap.
+The model integration is not implemented. The proposed US$10 budget is not an enforced provider limit. Before connecting a model, configure a provider-side cap or an application-side hard limit, verify it, and update this section with the measured cost boundary. Do not treat the request limits or illustrative US$0.27 estimate above as a cap.
