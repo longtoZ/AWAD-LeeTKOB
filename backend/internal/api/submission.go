@@ -223,6 +223,19 @@ func (s *Server) submit(w http.ResponseWriter, r *http.Request) {
 			fail(w, 422, "idempotency-key-reused", "Idempotency key reused", "This key was used for another request.")
 			return
 		}
+		// Re-queue judging when a student retries, so a lost response never
+		// leaves their work unjudged; the stored response is still replayed.
+		var retrySource string
+		_ = json.Unmarshal(obj["source"], &retrySource)
+		retryID := uuid.NewString()
+		_, err = tx.Exec(ctx, "INSERT INTO submissions (id,lab_id,student_id,source,created_at) VALUES ($1,$2,$3,$4,now())", retryID, lab, user, []byte(retrySource))
+		if err == nil {
+			_, err = tx.Exec(ctx, "INSERT INTO jobs (id,submission_id) VALUES ($1,$2)", uuid.NewString(), retryID)
+		}
+		if err != nil || tx.Commit(ctx) != nil {
+			fail(w, 503, "unavailable", "Service unavailable", "The submission could not be recorded.")
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Idempotent-Replayed", "true")
 		w.WriteHeader(201)
