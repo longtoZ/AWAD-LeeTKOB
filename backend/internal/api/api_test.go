@@ -175,6 +175,24 @@ func TestSubmissionContract(t *testing.T) {
 			t.Fatalf("unexpected problem: HTTP %d, body %s", out.Code, out.Body.String())
 		}
 	}
+	// Contract §4: a refusal creates nothing, and a replay creates no other
+	// submission or job. A status check alone cannot see a write that happened
+	// before the refusal, so these tests also read the database.
+	type rowCounts struct{ submissions, jobs, keys int }
+	countRows := func(t *testing.T) rowCounts {
+		t.Helper()
+		var c rowCounts
+		if err := db.QueryRow(ctx, "SELECT (SELECT count(*) FROM submissions), (SELECT count(*) FROM jobs), (SELECT count(*) FROM idempotency_keys)").Scan(&c.submissions, &c.jobs, &c.keys); err != nil {
+			t.Fatal(err)
+		}
+		return c
+	}
+	expectNothingRecorded := func(t *testing.T, before rowCounts) {
+		t.Helper()
+		if after := countRows(t); after != before {
+			t.Fatalf("stored rows changed: before %+v, after %+v", before, after)
+		}
+	}
 	login := func(email string) *http.Cookie {
 		out := request("POST", "/auth/login", fmt.Sprintf(`{"email":%q,"password":"test-password"}`, email), nil, "", "http://localhost:5173")
 		if out.Code != 204 {
@@ -229,8 +247,10 @@ func TestSubmissionContract(t *testing.T) {
 		if _, err = tx.Exec(ctx, "SELECT pg_advisory_xact_lock(hashtextextended($1,0))", student+":"+lab+":busy"); err != nil {
 			t.Fatal(err)
 		}
+		before := countRows(t)
 		out := request("POST", path, `{"source":"x"}`, cookie, "busy", origin)
 		expectProblem(t, out, 409, "idempotency-key-in-flight", "Request in progress")
+		expectNothingRecorded(t, before)
 	})
 	t.Run("job insert rollback", func(t *testing.T) {
 		if _, err := db.Exec(ctx, "ALTER TABLE jobs ADD CONSTRAINT reject_test_job CHECK (false) NOT VALID"); err != nil {
@@ -307,11 +327,15 @@ func TestSubmissionContract(t *testing.T) {
 			{"oversized source", path, fmt.Sprintf(`{"source":%q}`, strings.Repeat("x", 128*1024+1)), "case-source-large", origin, "invalid-request", "Invalid request", cookie, 400},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
+				before := countRows(t)
 				expectProblem(t, request("POST", tc.path, tc.body, tc.cookie, tc.key, tc.origin), tc.status, tc.slug, tc.title)
+				expectNothingRecorded(t, before)
 			})
 		}
 	})
 	t.Run("check order stops at the first failure", func(t *testing.T) {
+		before := countRows(t)
+		defer expectNothingRecorded(t, before)
 		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, nil, "", ""), 401, "unauthenticated", "Authentication required")
 		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, taCookie, "", ""), 403, "forbidden", "Forbidden")
 		expectProblem(t, request("POST", "/labs/not-a-uuid/submissions", `{`, cookie, "", ""), 403, "invalid-origin", "Invalid origin")
@@ -352,26 +376,32 @@ func TestSubmissionContract(t *testing.T) {
 		if err := db.QueryRow(ctx, "SELECT status FROM jobs WHERE submission_id=$1", resource.ID).Scan(&status); err != nil || status != "pending" {
 			t.Fatal("durable pending job missing", status, err)
 		}
+		beforeRetry := countRows(t)
 		retry := request("POST", path, `{ "source": "hello" }`, cookie, "same", origin)
 		if retry.Code != 201 || retry.Header().Get("Idempotent-Replayed") != "true" || !bytes.Equal(first.Body.Bytes(), retry.Body.Bytes()) {
 			t.Fatalf("replay: %d %s", retry.Code, retry.Body.String())
 		}
+		expectNothingRecorded(t, beforeRetry)
 		var count int
 		if err := db.QueryRow(ctx, "SELECT count(*) FROM jobs WHERE submission_id=$1", resource.ID).Scan(&count); err != nil || count != 1 {
 			t.Fatalf("job count: %d, %v", count, err)
 		}
 	})
 	t.Run("key reuse", func(t *testing.T) {
+		before := countRows(t)
 		expectProblem(t, request("POST", path, `{"source":"different"}`, cookie, "same", origin), 422, "idempotency-key-reused", "Idempotency key reused")
+		expectNothingRecorded(t, before)
 	})
 	t.Run("key retained after 23 hours", func(t *testing.T) {
 		if _, err := db.Exec(ctx, "UPDATE idempotency_keys SET created_at=now()-interval '23 hours' WHERE student_id=$1 AND lab_id=$2 AND key='same'", student, lab); err != nil {
 			t.Fatal(err)
 		}
+		before := countRows(t)
 		out := request("POST", path, `{"source":"hello"}`, cookie, "same", origin)
 		if out.Code != 201 || out.Header().Get("Idempotent-Replayed") != "true" {
 			t.Fatal(out.Code, out.Body.String())
 		}
+		expectNothingRecorded(t, before)
 	})
 	t.Run("same key in another lab", func(t *testing.T) {
 		secondLab := uuid.NewString()
