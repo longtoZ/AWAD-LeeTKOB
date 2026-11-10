@@ -6,6 +6,7 @@ createRoot(document.getElementById("root")!).render(
     <main>
       <h1>LeeTKOB</h1>
       <p>Project setup is in progress.</p>
+      <h2>Main branch push blocking, commit test</h2>
     </main>
   </React.StrictMode>,
 );
