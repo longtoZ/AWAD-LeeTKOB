@@ -275,15 +275,15 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Add `npm run e2e` with Playwright/Chromium to check the LeeTKOB app shell; keep it separate from API contract tests.
   - [x] Confirm the GitHub jobs pass; `gates`, `secret-history`, and `e2e` passed on [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986).
   - [x] Demonstrate that a code-only enrollment defect turns the contract suite red and passes after the fix; see [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861) and [green run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986).
-  - [ ] Configure the red check as required and prove it blocks merge (L4/H3).
+  - [x] Configure the red check as required and prove it blocks merge (L4/H3). See H3 and `PA2.md`.
 - [ ] **L4 — To Thanh Long** · Due: 10 Nov · Prerequisite: L3's baseline checks are green.
   - [ ] Require pull requests and all PA2 checks, including `gates` and `e2e`, on `main`; disallow bypass. Screenshots show the PR and three-check requirements, but do not show the bypass settings or enforcement status.
   - [x] Verify a direct push to `main` is rejected. See [rejected push](../img/evidence/main-branch-block.png).
   - [x] Save a settings link or screenshot and evidence of the rejected push. See [target](../img/evidence/branch-ruleset-1.png), [PR requirement](../img/evidence/branch-ruleset-2.png), [required checks](../img/evidence/branch-ruleset-3.png), and [rejected push](../img/evidence/main-branch-block.png).
-- [ ] **H3 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: L3 and L4.
+- [x] **H3 — Pham Bao Huy** · Due: 10 Nov · Prerequisites: L3 and L4. Done 10 Nov on protected `main`: tests-first [PR #9](https://github.com/longtoZ/AWAD-LeeTKOB/pull/9), then break [PR #10](https://github.com/longtoZ/AWAD-LeeTKOB/pull/10), with red blocked [run 42841435023](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42841435023) and green fix `473475d` in [run 42842548890](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42842548890).
   - [x] Make a code-only enrollment-guard violation on PR #6 without changing the contract or tests; commit `3d030a5`.
   - [x] Confirm `gates` turns red on the unenrolled/missing-lab cases in [run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861).
-  - [ ] Confirm the required check blocks merge; the repository has no verified branch-protection rule.
+  - [x] Confirm the required check blocks merge: second break `22030bc` on PR #10 failed the required `gates` check and GitHub blocked the merge ([screenshot](../img/evidence/pr-blocked-by-red-gates.png)); revert `473475d` turned it green.
   - [x] Restore the enrollment guard in `90b68ef`; [run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) is green with contract and tests unchanged.
 - [ ] **L5 — To Thanh Long** · Due: 10 Nov · Prerequisites: H3's break PR exists and its fix is green.
   - [x] Capture links to PR #6, red run 42661114861, fix commit `90b68ef`, and green run 42661351986 in `PA2.md`.
