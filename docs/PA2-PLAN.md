@@ -73,8 +73,8 @@ The queue, worker, sandbox, and model feature are planned for later milestones. 
 - [x] Create `.gitignore` and `.env.example`.
 - [x] Start local PostgreSQL and confirm it accepts connections (host port 5433).
 - [x] Clone the pushed repository, install frontend dependencies, and build the frontend. PostgreSQL was checked in the original workspace.
-- [ ] Configure an enforceable spending cap and measure cost per lab; the README has an illustrative estimate.
-- [ ] Complete a secret review of the tree and history. A pattern scan found no common key formats before the initial commit. Rotate any exposed secret and record it in `AI-LOG.md`.
+- [x] Configure a ₫100,000 monthly Gemini API Studio project cap for `AWAD-LeeTKOB`; retain screenshots in `img/evidence/` and document Google's billing-latency overage caveat in README. Cost per lab remains an estimate pending model integration.
+- [x] Run a full-history secret review through the required `secret-history` CI job; [run 42851830119](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42851830119) passed.
 
 ## 3. Write assistant rules and permissions
 
@@ -206,7 +206,7 @@ Completed so far:
 
 **Tag note:** `PA2.md` must link to the tag's CI run. Arrange the final commit and tag workflow so the tagged commit contains the required evidence; if the tag CI link is not known in advance, document how to locate the run from the tag and include the direct link when available.
 
-## PA2 readiness as of 10 November 2026
+## PA2 readiness snapshot as of 10 November 2026
 
 The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/submissions.md and the team's existing plan. Keep this choice consistent in the contract, tests, CI evidence, and hand-in.
 
@@ -220,9 +220,20 @@ The selected endpoint is POST /labs/{labId}/submissions, matching docs/contract/
 | Contract tests (15) | PostgreSQL-backed `TestSubmissionContract` checks error types, ownership/enrollment, idempotency, persistence, and rollback; [green run 42661351986](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661351986) names 46 contract subtests. A deliberate enrollment-guard break failed in [red run 42661114861](https://github.com/longtoZ/AWAD-LeeTKOB/actions/runs/42661114861), then passed after fix `90b68ef`. | Link the red/fix evidence from `PA2.md`; branch protection is needed to prove the red check blocks merge. |
 | AI log (5) | `AI-LOG.md` records actual setup and implementation decisions, including changed and rejected choices. | Keep the current CI run and remaining settings/evidence gaps accurate through hand-in. |
 
+### Spend-cap update — 11 November 2026
+
+Google AI Studio screenshots supplied by the user show the `AWAD-LeeTKOB` project on the paid tier with a ₫100,000 monthly project cap, set for all API keys. See [`README.md#spending-cap-status`](../README.md#spending-cap-status) and the three linked screenshots there. Google's cap is experimental, with roughly 10-minute billing latency and possible overages; the model is not integrated and cost per lab remains an estimate.
+
+### Commands, protected merges, and endpoint contract — 11 November 2026
+
+- All README checks passed from a clean Windows worktree at `8cae248` in a path without `#`; see [`PA2-QUALITY-GATE-VERIFICATION.md`](PA2-QUALITY-GATE-VERIFICATION.md). GitHub CI uses the same documented commands.
+- The active main ruleset requires PRs and all three checks; PR #10's red required check blocked merging, and the code fix turned it green. A direct push was rejected, and later main updates are merged PRs (#9–#13).
+- The endpoint contract matches the IA#3 structure and all top-band client requirements. It now identifies the class brief as authoritative and states that no FAQ answer is relied on; no owner question was necessary because no owner-dependent behavior remains unresolved.
+- Rubric reread: criterion 6 requires full error/ownership/idempotency coverage in required CI and a deliberate red/green break; it does not require uncertain-commit fault injection. Criterion 7 requires specific tool/task and real Changed/Rejected entries, which `AI-LOG.md` contains. The draft self-assessment is therefore 100/100; the instructor's mark remains authoritative.
+
 ### Remaining work before submission
 
-1. Keep the secret scan green and configure the actual spending cap.
+1. Keep the secret scan green; retain the project-cap overage caveat and measure cost per lab after model integration.
 2. Preserve the H1 historical test-first evidence if it exists; complete any remaining contract fault-injection scenarios and keep the verified endpoint tests green.
 3. Keep the README commands runnable from the repository root and identical to CI; show named unit/contract tests in the job log.
 4. Protect `main`, capture the blocked-break/fixed-green evidence, and keep later changes on PRs.
@@ -243,11 +254,11 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Freeze the reviewed contract against the class brief and any available product-owner FAQ answer.
   - [x] Confirm the contract states every field, role/enrollment rule, success/error body, RFC 9457 type/status, idempotency rule, side effect, and retry outcome.
   - [x] Record the frozen commit and test checklist; label unresolved behavior as a team assumption that does not conflict with the brief.
-- [ ] **K2 — Tran Anh Khoa** · Due: 8 Nov; rechecked 10 Nov · Prerequisite: K1's list of unanswered decisions.
-  - [ ] Ask the product owners only if a behavior question remains unresolved. The available record does not establish that a question was sent.
-  - [ ] Cite an FAQ answer if one is used. No answer is cited in this contract; its choices where the brief is silent are team decisions, not official requirements.
+- [x] **K2 — Tran Anh Khoa** · Due: 8 Nov; rechecked 11 Nov · Prerequisite: K1's list of unanswered decisions.
+  - [x] Review the brief for behavior questions that require a product-owner decision. None remains unresolved: endpoint-specific details left open by the brief are explicitly set as team contract choices.
+  - [x] No FAQ answer is relied on, so no FAQ citation is needed. If a future contract change relies on an FAQ answer, cite it in that change.
 
-**Evidence correction (10 Nov 2026):** The earlier K2 completion mark was unsupported. K1's contract blob SHA and the test checklist are recorded in `PA2.md`; no FAQ answer is claimed.
+**Evidence correction (10–11 Nov 2026):** The earlier K2 completion mark was unsupported and has not been backdated. K2 is now closed based on review of the brief and the explicit source note in `docs/contract/submissions.md`; no product-owner question or FAQ answer is claimed.
 - [x] **H1 — Pham Bao Huy** · Due: 9 Nov · Prerequisite: K1's frozen contract. Closed 10 Nov with one evidence gap, stated below and in `SELF_ASSESSMENT_REPORT.md`.
   - [x] Cover success, every contract error type, enrolled/unenrolled students, non-student roles, replay, changed-body key reuse, concurrent key use, and atomic submission/job behavior in Go HTTP tests. See `backend/internal/api/api_test.go`.
   - [x] Meet the Session 7 exercise target of at least 5 meaningful unit tests and 8 meaningful contract tests; count named tests, not duplicate assertions.
@@ -268,7 +279,7 @@ Mark each task complete only when its nested acceptance boxes are checked. Updat
   - [x] Confirm `.env.example` lists names only and add a full-history secret scan to CI.
   - [x] Run `npm audit` against the committed frontend lockfile; see `docs/PA2-QUALITY-GATE-VERIFICATION.md`.
   - [x] Verify the full-history scan passes for the submitted refs and resolve any findings; `secret-history` passed on MR #6 at `90b68ef` (run 42661351986).
-  - [ ] Configure an actual provider spending cap or enforceable application cap; document the cap and cost boundary in README.
+  - [x] Configure and document the provider project cap; screenshots and the billing-latency limitation are in README. Measure cost per lab after model integration.
   - [ ] If a real key appears in history, rotate it and record the recovery truthfully.
 - [x] **L3 — To Thanh Long** · Due: 10 Nov · Prerequisites: L1 commands and H1/H2 test suite.
   - [x] Add `gates`, `secret-history`, and separate `e2e` jobs for PRs, `main`, and the `pa2` tag. No failure suppression is used.

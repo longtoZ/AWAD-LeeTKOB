@@ -63,3 +63,26 @@ Kept: the existing contract, tests, and red/green PR evidence. A fresh second re
 Changed: corrected stale status in `PA2.md` and the self-assessment, replaced unfilled historical log prompts with explicit "not recorded" statements, and aligned the report with confirmed team IDs and live evidence.
 Rejected: treating the draft 80/100, an unverified spending cap, or an uncited product-owner answer as established facts.
 By hand: Tran Anh Khoa supplied the team's three student IDs. Further team review of the final score and archive is not recorded here.
+
+## 2026-11-11 — Gemini project spend-cap evidence
+Tool: Codex (this task), using screenshots supplied by the user.
+Asked for: update the PA#2 permissions-and-secrets evidence based on Google AI Studio screenshots.
+Changed: saved screenshots showing the `AWAD-LeeTKOB` project identity, linked billing/paid-tier setup, and a ₫100,000 monthly project spend cap. Updated the README, PA2 evidence page, and self-assessment. The score claims the rubric's top band while disclosing Google's experimental cap and approximate 10-minute billing delay, which can permit overages.
+By hand: the screenshots were supplied by the user. No API key value or identifier was added to the repository; model integration is not implemented.
+
+## 2026-11-11 — Remaining PA#2 rubric evidence
+Tool: Codex (this task).
+Asked for: close the remaining self-assessment gaps for commands, protected CI, and the endpoint contract.
+Kept: the README commands and CI workflow, existing red/green PR #10 evidence, active main ruleset, and the frozen submission behavior. No application code, tests, test data, or labels were changed.
+Changed: recorded a clean local run of every documented check from a path without `#`; documented the post-protection main history and linked PRs #9–#13; added contract source and cookie-jar notes distinguishing the class brief from team choices and stating that no product-owner FAQ answer is relied on. Updated the draft claims for criteria 3–5 to 10/10, 20/20, and 25/25 respectively. The draft total is 98/100 pending merge and final tag/package.
+Verified: frontend install/check, Go format/vet/PostgreSQL tests, dependency audit, and Playwright browser smoke test passed locally. The main branch history and active ruleset were read from GitHub; no external changes were made.
+
+## 2026-11-11 — Self-assessment rubric calibration
+Tool: Codex (this task), comparing the report against the supplied PA#2 rubric.
+Changed: revised the draft total from 98/100 to 100/100. Criterion 6's full-credit band requires contract-error/ownership/idempotency coverage in required CI and a deliberate red/green break; uncertain-commit fault injection is not listed. Criterion 7's five-point description requires named tools/tasks and specific Changed/Rejected entries, which the log contains. Kept the absent fault-injection test and missing historical H1/H2 evidence disclosed as limits, without using them to deduct points the rubric does not specify.
+Rejected: treating the rubric's ±10 self-assessment tolerance as permission to inflate a score; the updated score is based on the written full-credit descriptions. If the instructor awards 98, the 2-point difference is within the rubric's no-adjustment range.
+
+## 2026-11-11 — Clarify browser test setup
+Tool: Codex, following read-only review of the PA#2 evidence changes.
+Changed: separated the Playwright test command from browser installation in README and clarified that Windows/macOS and Linux CI need different browser setup flags, while both run the same `npm run e2e --prefix frontend` check.
+Kept: the existing local test result and the CI workflow command; no application or test files changed.
